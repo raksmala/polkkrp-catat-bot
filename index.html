@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KotaKita — Discord Message Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* ─── RESET & TOKENS ─────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-0: #0d0f14;
+    --bg-1: #13161e;
+    --bg-2: #1a1e29;
+    --bg-3: #222736;
+    --bg-4: #2a3045;
+    --border: #2e3548;
+    --border-hi: #404a64;
+    --text-0: #e8ecf5;
+    --text-1: #9aa3bf;
+    --text-2: #5c6480;
+    --accent: #4f7fff;
+    --accent-glow: rgba(79,127,255,.25);
+    --accent-dim: #2d4fa3;
+    --green: #3ecf8e;
+    --green-dim: rgba(62,207,142,.15);
+    --red: #f05252;
+    --red-dim: rgba(240,82,82,.15);
+    --yellow: #f5a623;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --sidebar-w: 220px;
+    --preview-w: 340px;
+    --transition: .18s cubic-bezier(.4,0,.2,1);
+  }
+
+  html { font-size: 14px; }
+  body {
+    background: var(--bg-0);
+    color: var(--text-0);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── LAYOUT ─────────────────────────────────────────── */
+  .app {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr var(--preview-w);
+    grid-template-rows: 56px 1fr;
+    grid-template-areas:
+      "header header header"
+      "sidebar main preview";
+    height: 100vh;
+  }
+
+  /* ─── HEADER ─────────────────────────────────────────── */
+  .header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+    position: relative;
+    z-index: 10;
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-badge {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 16px;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  .logo-text {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-0);
+    letter-spacing: -.3px;
+  }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text-2);
+    font-weight: 500;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  .header-spacer { flex: 1; }
+  .header-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-2);
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .mobile-menu-btn {
+    display: none;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    color: var(--text-1);
+    cursor: pointer;
+    font-size: 16px;
+    transition: background var(--transition);
+  }
+  .mobile-menu-btn:hover { background: var(--bg-4); }
+
+  /* ─── SIDEBAR ────────────────────────────────────────── */
+  .sidebar {
+    grid-area: sidebar;
+    background: var(--bg-1);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sidebar-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-2);
+    padding: 4px 8px 8px;
+    margin-top: 4px;
+  }
+  .tpl-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-1);
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    transition: all var(--transition);
+    width: 100%;
+  }
+  .tpl-btn:hover {
+    background: var(--bg-3);
+    color: var(--text-0);
+    border-color: var(--border);
+  }
+  .tpl-btn.active {
+    background: var(--bg-4);
+    color: var(--accent);
+    border-color: var(--accent-dim);
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+  .tpl-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--bg-3);
+    display: grid; place-items: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: background var(--transition);
+  }
+  .tpl-btn.active .tpl-icon {
+    background: var(--accent-dim);
+  }
+  .tpl-name { line-height: 1.2; }
+  .tpl-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-2);
+    display: block;
+    margin-top: 1px;
+  }
+
+  /* ─── MAIN ───────────────────────────────────────────── */
+  .main {
+    grid-area: main;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .form-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .form-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-0);
+    letter-spacing: -.3px;
+  }
+  .form-desc {
+    font-size: 12px;
+    color: var(--text-2);
+    margin-top: 4px;
+  }
+  .btn-clear {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    border-radius: var(--radius-sm);
+    color: var(--red);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-clear:hover { background: rgba(240,82,82,.28); }
+
+  .form-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeUp .25s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    color: var(--text-1);
+    display: flex; align-items: center; gap: 6px;
+  }
+  label .required { color: var(--accent); }
+  .static-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    background: var(--green-dim);
+    border: 1px solid rgba(62,207,142,.2);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+  }
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--text-0);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  input::placeholder { color: var(--text-2); }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c6480' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+  select option {
+    background: var(--bg-2);
+    color: var(--text-0);
+  }
+
+  /* Barang entries */
+  .barang-list { display: flex; flex-direction: column; gap: 10px; }
+  .barang-entry {
+    display: grid;
+    grid-template-columns: 1fr 100px 36px;
+    gap: 8px;
+    align-items: center;
+    animation: fadeUp .2s ease both;
+  }
+  .btn-remove-barang {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--red-dim);
+    border: 1px solid rgba(240,82,82,.3);
+    color: var(--red);
+    font-size: 16px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: background var(--transition);
+    flex-shrink: 0;
+  }
+  .btn-remove-barang:hover { background: rgba(240,82,82,.28); }
+  .btn-add-barang {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+    background: var(--bg-3);
+    border: 1px dashed var(--border-hi);
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    width: 100%;
+  }
+  .btn-add-barang:hover {
+    background: var(--bg-4);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ─── PREVIEW ────────────────────────────────────────── */
+  .preview {
+    grid-area: preview;
+    background: var(--bg-1);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .preview-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .preview-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--text-2);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .preview-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: .4; }
+  }
+  .preview-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .discord-mock {
+    background: #313338;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid #1e1f22;
+  }
+  .discord-mock-bar {
+    background: #2b2d31;
+    padding: 8px 12px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid #1e1f22;
+  }
+  .discord-channel {
+    font-size: 11px;
+    color: #a0a3b1;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .discord-channel::before { content: '#'; color: #5c6480; }
+  .discord-msg {
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .discord-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    display: grid; place-items: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .discord-msg-body { flex: 1; min-width: 0; }
+  .discord-username {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .discord-role-badge {
+    font-size: 9px;
+    background: rgba(79,127,255,.2);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: .3px;
+  }
+  .discord-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #dcddde;
+    line-height: 1.6;
+    white-space: pre;
+    word-break: break-all;
+    overflow-x: auto;
+  }
+  .preview-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 10px;
+    color: var(--text-2);
+    font-size: 12px;
+    text-align: center;
+  }
+  .preview-empty-icon { font-size: 32px; opacity: .4; }
+
+  /* Counter & actions */
+  .preview-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .char-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-2);
+    flex: 1;
+  }
+  .char-counter span { color: var(--accent); }
+  .btn-copy {
+    padding: 8px 16px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: all var(--transition);
+    box-shadow: 0 0 20px var(--accent-glow);
+    letter-spacing: .2px;
+  }
+  .btn-copy:hover { filter: brightness(1.15); transform: translateY(-1px); }
+  .btn-copy:active { transform: translateY(0); }
+  .btn-copy.copied {
+    background: var(--green);
+    box-shadow: 0 0 20px rgba(62,207,142,.3);
+  }
+
+  /* ─── TOAST ──────────────────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--bg-3);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    z-index: 9999;
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 24px rgba(62,207,142,.15);
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* ─── MOBILE OVERLAY ─────────────────────────────────── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 99;
+    backdrop-filter: blur(2px);
+  }
+
+  /* ─── SCROLLBAR ──────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-hi); }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .app {
+      grid-template-columns: 1fr;
+      grid-template-rows: 56px 1fr;
+      grid-template-areas:
+        "header"
+        "main";
+    }
+    .sidebar {
+      position: fixed;
+      left: 0; top: 56px;
+      bottom: 0;
+      width: var(--sidebar-w);
+      z-index: 100;
+      transform: translateX(-100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .preview {
+      position: fixed;
+      right: 0; top: 56px;
+      bottom: 0;
+      width: min(var(--preview-w), 100vw);
+      z-index: 100;
+      transform: translateX(100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .preview.open { transform: translateX(0); }
+    .mobile-menu-btn { display: flex; align-items: center; gap: 6px; }
+    .overlay { display: block; }
+    .overlay.hidden { opacity: 0; pointer-events: none; }
+    .overlay.visible { opacity: 1; pointer-events: all; }
+    .main { padding: 16px; }
+    .barang-entry { grid-template-columns: 1fr 80px 36px; }
+    /* mobile header actions */
+    .header-preview-btn {
+      display: flex !important;
+    }
+  }
+  @media (max-width: 480px) {
+    :root { --sidebar-w: 85vw; --preview-w: 100vw; }
+    .form-header { flex-direction: column; align-items: flex-start; }
+    .barang-entry { grid-template-columns: 1fr 70px 36px; }
+  }
+  .header-preview-btn {
+    display: none;
+    padding: 6px 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    align-items: center;
+    gap: 6px;
+    transition: background var(--transition);
+  }
+  .header-preview-btn:hover { background: var(--bg-4); color: var(--text-0); }
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast" aria-live="polite">✓ Disalin ke clipboard!</div>
+
+<!-- Mobile overlay -->
+<div class="overlay hidden" id="overlay"></div>
+
+<div class="app">
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <button class="mobile-menu-btn" id="menuBtn" aria-label="Toggle sidebar">
+      ☰ <span style="font-size:12px">Menu</span>
+    </button>
+    <div class="header-logo">
+      <div class="logo-badge">🚔</div>
+      <div>
+        <div class="logo-text">KotaKita</div>
+        <div class="logo-sub">Kepolisian Tools</div>
+      </div>
+    </div>
+    <div class="header-spacer"></div>
+    <button class="header-preview-btn" id="previewBtn">👁 Preview</button>
+    <div class="header-tag">Discord Message Generator</div>
+  </header>
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-label">Template</div>
+
+    <button class="tpl-btn" data-tpl="barang">
+      <div class="tpl-icon">📦</div>
+      <div class="tpl-name">
+        Barang Bukti
+        <span class="tpl-file">barang.md</span>
+      </div>
+    </button>
+
+    <button class="tpl-btn" data-tpl="peluru">
+      <div class="tpl-icon">🎬</div>
+      <div class="tpl-name">
+        Pengambilan Clip
+        <span class="tpl-file">pengambilan-clip.md</span>
+      </div>
+    </button>
+
+    <button class="tpl-btn" data-tpl="senjata-apd">
+      <div class="tpl-icon">🛡️</div>
+      <div class="tpl-name">
+        Senjata APD
+        <span class="tpl-file">senjata-apd.md</span>
+      </div>
+    </button>
+
+    <button class="tpl-btn" data-tpl="senjata-ilegal">
+      <div class="tpl-icon">⚠️</div>
+      <div class="tpl-name">
+        Senjata Ilegal
+        <span class="tpl-file">senjata-ilegal.md</span>
+      </div>
+    </button>
+  </nav>
+
+  <!-- ── MAIN FORM ── -->
+  <main class="main" id="main">
+    <div class="form-header">
+      <div>
+        <div class="form-title" id="formTitle">Pilih Template</div>
+        <div class="form-desc" id="formDesc">Pilih salah satu template dari sidebar untuk memulai.</div>
+      </div>
+      <button class="btn-clear" id="btnClear" style="display:none" aria-label="Clear form">
+        🗑 Clear
+      </button>
+    </div>
+    <div id="formArea"></div>
+  </main>
+
+  <!-- ── PREVIEW ── -->
+  <aside class="preview" id="preview">
+    <div class="preview-header">
+      <div class="preview-title">
+        <div class="preview-dot"></div>
+        Live Preview
+      </div>
+    </div>
+    <div class="preview-body" id="previewBody">
+      <div class="preview-empty">
+        <div class="preview-empty-icon">💬</div>
+        <div>Isi form untuk melihat<br>preview pesan Discord.</div>
+      </div>
+    </div>
+    <div class="preview-footer">
+      <div class="char-counter" id="charCounter">0 karakter</div>
+      <button class="btn-copy" id="btnCopy" disabled aria-label="Copy to clipboard">
+        📋 Copy
+      </button>
+    </div>
+  </aside>
+
+</div><!-- .app -->
+
+<script>
+/* ============================================================
+   KotaKita Discord Message Generator
+   Pure vanilla JS — no frameworks, no build tools
+   ============================================================ */
+
+'use strict';
+
+// ── Storage key prefix
+const NS = 'kotakita_';
+
+// ── State
+let activeTpl = null;
+let barangEntries = [{ nama: '', jumlah: '' }];
+
+// ── DOM refs
+const sidebar    = document.getElementById('sidebar');
+const formArea   = document.getElementById('formArea');
+const formTitle  = document.getElementById('formTitle');
+const formDesc   = document.getElementById('formDesc');
+const btnClear   = document.getElementById('btnClear');
+const previewBody = document.getElementById('previewBody');
+const charCounter = document.getElementById('charCounter');
+const btnCopy    = document.getElementById('btnCopy');
+const toast      = document.getElementById('toast');
+const overlay    = document.getElementById('overlay');
+const menuBtn    = document.getElementById('menuBtn');
+const previewBtn = document.getElementById('previewBtn');
+const previewEl  = document.getElementById('preview');
+
+// ── Template definitions
+const TEMPLATES = {
+  barang: {
+    title: 'Barang Bukti',
+    desc:  'Generate laporan barang bukti dari suspect.',
+    icon:  '📦',
+    fields: ['nama_suspect', 'keterangan', '_barang'],
+  },
+  peluru: {
+    title: 'Pengambilan Clip',
+    desc:  'Generate form pengambilan klip peluru.',
+    icon:  '🎬',
+    fields: ['jenis_peluru', 'jumlah_peluru', 'status'],
+  },
+  'senjata-apd': {
+    title: 'Senjata APD',
+    desc:  'Generate laporan senjata APD.',
+    icon:  '🛡️',
+    fields: ['nama', 'serial_number'],
+  },
+  'senjata-ilegal': {
+    title: 'Senjata Ilegal',
+    desc:  'Generate laporan senjata ilegal.',
+    icon:  '⚠️',
+    fields: ['nama_suspect', 'serial_number', 'keterangan'],
+  },
+};
+
+// ── Format output for each template (exact spacing as spec)
+function formatOutput(tpl, vals) {
+  switch (tpl) {
+    case 'barang': {
+      const barangStr = (vals._barang || [])
+        .filter(b => b.nama.trim())
+        .map(b => `${b.nama.trim()} (${b.jumlah || 0}x)`)
+        .join(', ') || '—';
+      return (
+        `NAMA SUSPECT    : ${vals.nama_suspect || '—'}\n` +
+        `JENIS BARANG    : ${barangStr}\n` +
+        `KETERANGAN      : BB ${vals.keterangan || '—'}`
+      );
+    }
+    case 'peluru':
+      return (
+        `NAMA LENGKAP  : MALA MORGENSTER\n` +
+        `JENIS PELURU  : ${vals.jenis_peluru || '—'}\n` +
+        `JUMLAH PELURU : ${vals.jumlah_peluru || '—'} paket\n` +
+        `STATUS        : ${vals.status || '—'}`
+      );
+    case 'senjata-apd':
+      return (
+        `NAMA            : ${vals.nama || '—'}\n` +
+        `SERIAL NUMBER   : ${vals.serial_number || '—'}\n` +
+        `KETERANGAN      : BB WD APD`
+      );
+    case 'senjata-ilegal':
+      return (
+        `NAMA SUSPECT    : ${vals.nama_suspect || '—'}\n` +
+        `SERIAL NUMBER   : ${vals.serial_number || '—'}\n` +
+        `KETERANGAN      : BB ${vals.keterangan || '—'}`
+      );
+    default:
+      return '';
+  }
+}
+
+// ── Collect current form values
+function collectValues() {
+  const vals = {};
+  formArea.querySelectorAll('[data-field]').forEach(el => {
+    vals[el.dataset.field] = el.value;
+  });
+  if (activeTpl === 'barang') {
+    vals._barang = barangEntries.map((_, i) => {
+      const namaEl  = formArea.querySelector(`[data-barang-nama="${i}"]`);
+      const jumlahEl = formArea.querySelector(`[data-barang-jumlah="${i}"]`);
+      return {
+        nama:   namaEl   ? namaEl.value   : '',
+        jumlah: jumlahEl ? jumlahEl.value : '',
+      };
+    });
+  }
+  return vals;
+}
+
+// ── Update live preview
+function updatePreview() {
+  if (!activeTpl) return;
+  const vals   = collectValues();
+  const output = formatOutput(activeTpl, vals);
+  const chars  = output.length;
+
+  charCounter.innerHTML = `<span>${chars}</span> karakter`;
+  btnCopy.disabled = chars === 0;
+
+  previewBody.innerHTML = `
+    <div class="discord-mock">
+      <div class="discord-mock-bar">
+        <span class="discord-channel">laporan-bb</span>
+      </div>
+      <div class="discord-msg">
+        <div class="discord-avatar">🚔</div>
+        <div class="discord-msg-body">
+          <div class="discord-username">
+            Petugas KotaKita
+            <span class="discord-role-badge">POLISI</span>
+          </div>
+          <div class="discord-text" id="discordText"></div>
+        </div>
+      </div>
+    </div>`;
+
+  // Set text via textContent to avoid HTML injection
+  document.getElementById('discordText').textContent = output;
+
+  // Persist values
+  saveStorage();
+}
+
+// ── Save to localStorage
+function saveStorage() {
+  if (!activeTpl) return;
+  const vals = collectValues();
+  localStorage.setItem(NS + 'tpl',    activeTpl);
+  localStorage.setItem(NS + 'vals_' + activeTpl, JSON.stringify(vals));
+}
+
+// ── Load from localStorage
+function loadStorage(tpl) {
+  try {
+    const raw = localStorage.getItem(NS + 'vals_' + tpl);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+// ── Build form HTML for a template
+function buildForm(tpl) {
+  const saved = loadStorage(tpl);
+
+  // Restore barang entries
+  if (tpl === 'barang' && saved._barang && saved._barang.length) {
+    barangEntries = saved._barang;
+  } else if (tpl === 'barang') {
+    barangEntries = [{ nama: '', jumlah: '' }];
+  }
+
+  let html = '<div class="form-card">';
+
+  switch (tpl) {
+
+    /* ── barang ── */
+    case 'barang':
+      html += field('text', 'nama_suspect', 'Nama Suspect', saved.nama_suspect || '', 'Contoh: JOHN DOE');
+      html += `
+        <div class="field-group">
+          <label>Jenis Barang <span class="required">*</span></label>
+          <div class="barang-list" id="barangList">
+            ${barangEntries.map((b, i) => barangRow(i, b.nama, b.jumlah)).join('')}
+          </div>
+          <button class="btn-add-barang" id="btnAddBarang" type="button">＋ Tambah Barang</button>
+        </div>`;
+      html += field('text', 'keterangan', 'Keterangan', saved.keterangan || '', 'Contoh: Pistol, Amunisi, dll');
+      break;
+
+    /* ── peluru ── */
+    case 'peluru':
+      html += `
+        <div class="field-group">
+          <label>Nama Lengkap</label>
+          <div class="static-value">MALA MORGENSTER</div>
+        </div>`;
+      html += selectField('jenis_peluru', 'Jenis Peluru', [
+        '.45 ACP', '.38 LC', '5.56x45', '12 Gauge', '.50 BMG',
+      ], saved.jenis_peluru || '');
+      html += field('number', 'jumlah_peluru', 'Jumlah Peluru (paket)', saved.jumlah_peluru || '', '0');
+      html += selectField('status', 'Status', ['FREE', 'PAID'], saved.status || '');
+      break;
+
+    /* ── senjata-apd ── */
+    case 'senjata-apd':
+      html += field('text', 'nama', 'Nama', saved.nama || '', 'Contoh: JOHN DOE');
+      html += field('text', 'serial_number', 'Serial Number', saved.serial_number || '', 'Contoh: SN-12345');
+      break;
+
+    /* ── senjata-ilegal ── */
+    case 'senjata-ilegal':
+      html += field('text', 'nama_suspect', 'Nama Suspect', saved.nama_suspect || '', 'Contoh: JOHN DOE');
+      html += field('text', 'serial_number', 'Serial Number', saved.serial_number || '', 'Contoh: SN-12345');
+      html += field('text', 'keterangan', 'Keterangan', saved.keterangan || '', 'Contoh: Ilegal, tanpa izin');
+      break;
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function field(type, id, labelText, value, placeholder) {
+  return `
+    <div class="field-group">
+      <label for="f_${id}">${labelText} <span class="required">*</span></label>
+      <input
+        type="${type}"
+        id="f_${id}"
+        data-field="${id}"
+        value="${escAttr(value)}"
+        placeholder="${escAttr(placeholder)}"
+        autocomplete="off"
+        ${type === 'number' ? 'min="0"' : ''}
+      />
+    </div>`;
+}
+
+function selectField(id, labelText, options, selected) {
+  const opts = options.map(o =>
+    `<option value="${escAttr(o)}" ${o === selected ? 'selected' : ''}>${o}</option>`
+  ).join('');
+  return `
+    <div class="field-group">
+      <label for="f_${id}">${labelText} <span class="required">*</span></label>
+      <select id="f_${id}" data-field="${id}">${opts}</select>
+    </div>`;
+}
+
+function barangRow(i, nama, jumlah) {
+  return `
+    <div class="barang-entry" id="barang_row_${i}">
+      <input
+        type="text"
+        placeholder="Nama Barang"
+        data-barang-nama="${i}"
+        value="${escAttr(nama)}"
+        autocomplete="off"
+      />
+      <input
+        type="number"
+        placeholder="Jumlah"
+        min="0"
+        data-barang-jumlah="${i}"
+        value="${escAttr(jumlah)}"
+      />
+      <button class="btn-remove-barang" data-remove="${i}" aria-label="Hapus" type="button">✕</button>
+    </div>`;
+}
+
+function escAttr(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// ── Activate a template
+function activateTemplate(tpl) {
+  activeTpl = tpl;
+  const def = TEMPLATES[tpl];
+
+  // Sidebar highlight
+  document.querySelectorAll('.tpl-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tpl === tpl);
+  });
+
+  // Update header
+  formTitle.textContent = `${def.icon} ${def.title}`;
+  formDesc.textContent  = def.desc;
+  btnClear.style.display = 'flex';
+
+  // Render form
+  formArea.innerHTML = buildForm(tpl);
+
+  // Attach events
+  formArea.addEventListener('input', updatePreview);
+
+  if (tpl === 'barang') {
+    document.getElementById('btnAddBarang').addEventListener('click', addBarang);
+    formArea.addEventListener('click', handleRemoveBarang);
+  }
+
+  updatePreview();
+}
+
+// ── Add barang row
+function addBarang() {
+  const vals = collectValues();
+  // Sync current state first
+  barangEntries = (vals._barang || []).concat([{ nama: '', jumlah: '' }]);
+  const i   = barangEntries.length - 1;
+  const list = document.getElementById('barangList');
+  const div  = document.createElement('div');
+  div.innerHTML = barangRow(i, '', '');
+  list.appendChild(div.firstElementChild);
+}
+
+// ── Remove barang row
+function handleRemoveBarang(e) {
+  const btn = e.target.closest('[data-remove]');
+  if (!btn) return;
+  const i = parseInt(btn.dataset.remove, 10);
+  // Collect current values before removal
+  const rows = formArea.querySelectorAll('[data-barang-nama]');
+  const entries = [];
+  rows.forEach((el, idx) => {
+    if (idx === i) return;
+    const jumlahEl = formArea.querySelector(`[data-barang-jumlah="${idx}"]`);
+    entries.push({ nama: el.value, jumlah: jumlahEl ? jumlahEl.value : '' });
+  });
+  barangEntries = entries.length ? entries : [{ nama: '', jumlah: '' }];
+  // Re-render just the barang list
+  const list = document.getElementById('barangList');
+  list.innerHTML = barangEntries.map((b, j) => barangRow(j, b.nama, b.jumlah)).join('');
+  updatePreview();
+}
+
+// ── Copy to clipboard
+btnCopy.addEventListener('click', () => {
+  if (!activeTpl) return;
+  const vals   = collectValues();
+  const output = formatOutput(activeTpl, vals);
+  if (!output) return;
+
+  navigator.clipboard.writeText(output).then(() => {
+    btnCopy.classList.add('copied');
+    btnCopy.textContent = '✓ Disalin!';
+    showToast();
+    setTimeout(() => {
+      btnCopy.classList.remove('copied');
+      btnCopy.innerHTML = '📋 Copy';
+    }, 2000);
+  }).catch(() => {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = output;
+    ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast();
+  });
+});
+
+// ── Clear form
+btnClear.addEventListener('click', () => {
+  if (!activeTpl) return;
+  barangEntries = [{ nama: '', jumlah: '' }];
+  localStorage.removeItem(NS + 'vals_' + activeTpl);
+  formArea.innerHTML = buildForm(activeTpl);
+  formArea.addEventListener('input', updatePreview);
+  if (activeTpl === 'barang') {
+    document.getElementById('btnAddBarang').addEventListener('click', addBarang);
+    formArea.addEventListener('click', handleRemoveBarang);
+  }
+  updatePreview();
+});
+
+// ── Toast
+function showToast() {
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ── Template button clicks (sidebar)
+document.querySelectorAll('.tpl-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activateTemplate(btn.dataset.tpl);
+    closeMobile();
+  });
+});
+
+// ── Mobile sidebar toggle
+menuBtn.addEventListener('click', () => {
+  const open = sidebar.classList.toggle('open');
+  overlay.classList.toggle('visible', open);
+  overlay.classList.toggle('hidden', !open);
+  if (previewEl.classList.contains('open')) {
+    previewEl.classList.remove('open');
+  }
+});
+
+// ── Mobile preview toggle
+previewBtn.addEventListener('click', () => {
+  const open = previewEl.classList.toggle('open');
+  overlay.classList.toggle('visible', open);
+  overlay.classList.toggle('hidden', !open);
+  if (sidebar.classList.contains('open')) {
+    sidebar.classList.remove('open');
+  }
+});
+
+// ── Overlay click → close drawers
+overlay.addEventListener('click', closeMobile);
+
+function closeMobile() {
+  sidebar.classList.remove('open');
+  previewEl.classList.remove('open');
+  overlay.classList.remove('visible');
+  overlay.classList.add('hidden');
+}
+
+// ── Restore last used template on load
+(function init() {
+  const lastTpl = localStorage.getItem(NS + 'tpl');
+  if (lastTpl && TEMPLATES[lastTpl]) {
+    activateTemplate(lastTpl);
+  }
+})();
+</script>
+</body>
+</html>
