@@ -265,6 +265,9 @@
     border-radius: var(--radius-sm);
     padding: 10px 14px;
   }
+  input[type="text"] {
+    text-transform: uppercase;
+  }
   input[type="text"],
   input[type="number"],
   select {
@@ -759,56 +762,80 @@ const TEMPLATES = {
   },
 };
 
+function upperStr(v) {
+  return typeof v === 'string' ? v.toUpperCase() : v;
+}
+
+function enforceUppercase(e) {
+  const el = e.target;
+  if (el.tagName !== 'INPUT' || el.type !== 'text') return;
+  const start = el.selectionStart;
+  const end = el.selectionEnd;
+  const upper = el.value.toUpperCase();
+  if (el.value !== upper) {
+    el.value = upper;
+    el.setSelectionRange(start, end);
+  }
+}
+
 // ── Format output for each template (exact spacing as spec)
 function formatOutput(tpl, vals) {
+  let body = '';
   switch (tpl) {
     case 'barang': {
       const barangStr = (vals._barang || [])
         .filter(b => b.nama.trim())
         .map(b => `${b.nama.trim()} (${b.jumlah || 0}x)`)
         .join(', ') || '—';
-      return (
+      body =
         `NAMA SUSPECT    : ${vals.nama_suspect || '—'}\n` +
         `JENIS BARANG    : ${barangStr}\n` +
-        `KETERANGAN      : BB ${vals.keterangan || '—'}`
-      );
+        `KETERANGAN      : BB ${vals.keterangan || '—'}`;
+      break;
     }
     case 'peluru':
-      return (
+      body =
         `NAMA LENGKAP  : MALA MORGENSTER\n` +
         `JENIS PELURU  : ${vals.jenis_peluru || '—'}\n` +
         `JUMLAH PELURU : ${vals.jumlah_peluru || '—'} paket\n` +
-        `STATUS        : ${vals.status || '—'}`
-      );
+        `STATUS        : ${vals.status || '—'}`;
+      break;
     case 'senjata-apd':
-      return (
+      body =
         `NAMA            : ${vals.nama || '—'}\n` +
         `SERIAL NUMBER   : ${vals.serial_number || '—'}\n` +
-        `KETERANGAN      : BB WD APD`
-      );
+        `KETERANGAN      : BB WD APD`;
+      break;
     case 'senjata-ilegal':
-      return (
+      body =
         `NAMA SUSPECT    : ${vals.nama_suspect || '—'}\n` +
         `SERIAL NUMBER   : ${vals.serial_number || '—'}\n` +
-        `KETERANGAN      : BB ${vals.keterangan || '—'}`
-      );
+        `KETERANGAN      : BB ${vals.keterangan || '—'}`;
+      break;
     default:
       return '';
   }
+  if (!body) return '';
+  return '```\n' + body + '\n```';
 }
 
 // ── Collect current form values
 function collectValues() {
   const vals = {};
   formArea.querySelectorAll('[data-field]').forEach(el => {
-    vals[el.dataset.field] = el.value;
+    const v = el.value;
+    if (el.tagName === 'SELECT' || (el.tagName === 'INPUT' && el.type === 'text')) {
+      vals[el.dataset.field] = upperStr(v);
+    } else {
+      vals[el.dataset.field] = v;
+    }
   });
   if (activeTpl === 'barang') {
     vals._barang = barangEntries.map((_, i) => {
       const namaEl  = formArea.querySelector(`[data-barang-nama="${i}"]`);
       const jumlahEl = formArea.querySelector(`[data-barang-jumlah="${i}"]`);
       return {
-        nama:   namaEl   ? namaEl.value   : '',
+        nama:   namaEl   ? upperStr(namaEl.value)   : '',
         jumlah: jumlahEl ? jumlahEl.value : '',
       };
     });
@@ -872,7 +899,10 @@ function buildForm(tpl) {
 
   // Restore barang entries
   if (tpl === 'barang' && saved._barang && saved._barang.length) {
-    barangEntries = saved._barang;
+    barangEntries = saved._barang.map(b => ({
+      nama: upperStr(b.nama || ''),
+      jumlah: b.jumlah || '',
+    }));
   } else if (tpl === 'barang') {
     barangEntries = [{ nama: '', jumlah: '' }];
   }
@@ -883,16 +913,16 @@ function buildForm(tpl) {
 
     /* ── barang ── */
     case 'barang':
-      html += field('text', 'nama_suspect', 'Nama Suspect', saved.nama_suspect || '', 'Contoh: JOHN DOE');
+      html += field('text', 'nama_suspect', 'Nama Suspect', upperStr(saved.nama_suspect || ''), 'Contoh: MALA MORGENSTER');
       html += `
         <div class="field-group">
           <label>Jenis Barang <span class="required">*</span></label>
           <div class="barang-list" id="barangList">
-            ${barangEntries.map((b, i) => barangRow(i, b.nama, b.jumlah)).join('')}
+            ${barangEntries.map((b, i) => barangRow(i, upperStr(b.nama), b.jumlah)).join('')}
           </div>
           <button class="btn-add-barang" id="btnAddBarang" type="button">＋ Tambah Barang</button>
         </div>`;
-      html += field('text', 'keterangan', 'Keterangan', saved.keterangan || '', 'Contoh: Pistol, Amunisi, dll');
+      html += field('text', 'keterangan', 'Keterangan', upperStr(saved.keterangan || ''), 'Contoh: PZI, PERAMPOKAN WARUNG, dll');
       break;
 
     /* ── peluru ── */
@@ -911,15 +941,15 @@ function buildForm(tpl) {
 
     /* ── senjata-apd ── */
     case 'senjata-apd':
-      html += field('text', 'nama', 'Nama', saved.nama || '', 'Contoh: JOHN DOE');
-      html += field('text', 'serial_number', 'Serial Number', saved.serial_number || '', 'Contoh: SN-12345');
+      html += field('text', 'nama', 'Nama', upperStr(saved.nama || ''), 'Contoh: MALA MORGENSTER');
+      html += field('text', 'serial_number', 'Serial Number', upperStr(saved.serial_number || ''), 'Contoh: SN-12345');
       break;
 
     /* ── senjata-ilegal ── */
     case 'senjata-ilegal':
-      html += field('text', 'nama_suspect', 'Nama Suspect', saved.nama_suspect || '', 'Contoh: JOHN DOE');
-      html += field('text', 'serial_number', 'Serial Number', saved.serial_number || '', 'Contoh: SN-12345');
-      html += field('text', 'keterangan', 'Keterangan', saved.keterangan || '', 'Contoh: Ilegal, tanpa izin');
+      html += field('text', 'nama_suspect', 'Nama Suspect', upperStr(saved.nama_suspect || ''), 'Contoh: MALA MORGENSTER');
+      html += field('text', 'serial_number', 'Serial Number', upperStr(saved.serial_number || ''), 'Contoh: SN-12345');
+      html += field('text', 'keterangan', 'Keterangan', upperStr(saved.keterangan || ''), 'Contoh: PZI, PERAMPOKAN WARUNG');
       break;
   }
 
@@ -1003,14 +1033,27 @@ function activateTemplate(tpl) {
   formArea.innerHTML = buildForm(tpl);
 
   // Attach events
-  formArea.addEventListener('input', updatePreview);
+  formArea.addEventListener('input', onFormInput);
+  formArea.addEventListener('change', onFormInput);
 
   if (tpl === 'barang') {
     document.getElementById('btnAddBarang').addEventListener('click', addBarang);
     formArea.addEventListener('click', handleRemoveBarang);
   }
 
+  uppercaseAllTextInputs();
   updatePreview();
+}
+
+function onFormInput(e) {
+  enforceUppercase(e);
+  updatePreview();
+}
+
+function uppercaseAllTextInputs() {
+  formArea.querySelectorAll('input[type="text"]').forEach(el => {
+    el.value = upperStr(el.value);
+  });
 }
 
 // ── Add barang row
@@ -1079,7 +1122,9 @@ btnClear.addEventListener('click', () => {
   barangEntries = [{ nama: '', jumlah: '' }];
   localStorage.removeItem(NS + 'vals_' + activeTpl);
   formArea.innerHTML = buildForm(activeTpl);
-  formArea.addEventListener('input', updatePreview);
+  formArea.addEventListener('input', onFormInput);
+  formArea.addEventListener('change', onFormInput);
+  uppercaseAllTextInputs();
   if (activeTpl === 'barang') {
     document.getElementById('btnAddBarang').addEventListener('click', addBarang);
     formArea.addEventListener('click', handleRemoveBarang);
