@@ -390,13 +390,16 @@
   }
   .pasal-combobox-dropdown {
     position: fixed;
-    max-height: 240px;
+    max-height: min(240px, 50vh);
     overflow-y: auto;
+    overflow-x: hidden;
     background: var(--bg-2);
     border: 1px solid var(--border-hi);
     border-radius: var(--radius-sm);
     z-index: 10000;
     box-shadow: 0 8px 24px rgba(0,0,0,.45);
+    pointer-events: auto;
+    isolation: isolate;
   }
   .pasal-combobox-dropdown.hidden { display: none; }
   .pasal-combobox-group {
@@ -1467,20 +1470,32 @@ function renderPasalDropdownList(listEl, items, activeIdx) {
 }
 
 function closeAllPasalDropdowns(exceptCombo) {
-  formArea.querySelectorAll('.pasal-combobox').forEach(combo => {
+  document.querySelectorAll('.pasal-combobox-dropdown').forEach(dd => {
+    const combo = dd._ownerCombo || dd.closest('.pasal-combobox');
     if (exceptCombo && combo === exceptCombo) return;
-    combo.classList.remove('open');
-    const wrap = combo.closest('[data-pasal-wrap]');
-    if (wrap) wrap.classList.remove('is-open');
-    const dd = combo.querySelector('.pasal-combobox-dropdown');
-    if (dd) {
-      dd.classList.add('hidden');
-      if (dd._ownerCombo === combo) {
+    dd.classList.add('hidden');
+    if (combo) {
+      combo.classList.remove('open');
+      const wrap = combo.closest('[data-pasal-wrap]');
+      if (wrap) wrap.classList.remove('is-open');
+      if (dd.parentElement === document.body) {
         combo.appendChild(dd);
         dd._ownerCombo = null;
       }
     }
   });
+}
+
+function selectPasalItem(item) {
+  const dd = item.closest('.pasal-combobox-dropdown');
+  const combo = dd?._ownerCombo;
+  const wrap = combo?.closest('[data-pasal-wrap]');
+  if (!wrap || !item.dataset.kode) return;
+  wrap.dataset.pasalKode = item.dataset.kode;
+  const input = wrap.querySelector('.pasal-combobox-input');
+  if (input) input.value = pasalLabel(item.dataset.kode);
+  closeAllPasalDropdowns();
+  updatePreview();
 }
 
 function positionPasalDropdown(combo, dropdown, input) {
@@ -1540,6 +1555,11 @@ function initPasalCombobox(wrapEl) {
     updatePreview();
   }
 
+  dropdown._selectPasal = selectPasal;
+  dropdown._getFiltered = () => filtered;
+  dropdown._setActiveIdx = (idx) => { activeIdx = idx; };
+  dropdown._getActiveIdx = () => activeIdx;
+
   function restoreLabelIfNeeded() {
     const kode = wrapEl.dataset.pasalKode || '';
     if (kode && input.value !== pasalLabel(kode)) {
@@ -1598,26 +1618,13 @@ function initPasalCombobox(wrapEl) {
     }
   });
 
-  dropdown.addEventListener('mousedown', (e) => {
-    const btn = e.target.closest('.pasal-combobox-item');
-    if (!btn) return;
-    e.preventDefault();
-    e.stopPropagation();
-    selectPasal(btn.dataset.kode);
-  });
-
-  dropdown.addEventListener('click', (e) => {
-    const btn = e.target.closest('.pasal-combobox-item');
-    if (!btn) return;
-    e.stopPropagation();
-    selectPasal(btn.dataset.kode);
-  });
-
   dropdown.addEventListener('mouseover', (e) => {
     const btn = e.target.closest('.pasal-combobox-item');
     if (!btn) return;
     activeIdx = parseInt(btn.dataset.idx, 10);
-    renderPasalDropdownList(dropdown, filtered, activeIdx);
+    dropdown.querySelectorAll('.pasal-combobox-item.active').forEach(el => {
+      el.classList.toggle('active', el === btn);
+    });
   });
 
   window.addEventListener('scroll', onScrollReposition, true);
@@ -1777,10 +1784,21 @@ previewBody.addEventListener('click', (e) => {
   if (text) copyToClipboard(text);
 });
 
-document.addEventListener('mousedown', (e) => {
-  if (e.target.closest('.pasal-combobox') || e.target.closest('.pasal-combobox-dropdown')) return;
-  closeAllPasalDropdowns();
-});
+document.addEventListener('pointerdown', (e) => {
+  const item = e.target.closest('.pasal-combobox-item');
+  if (item) {
+    const dd = item.closest('.pasal-combobox-dropdown');
+    if (dd && !dd.classList.contains('hidden')) {
+      e.preventDefault();
+      e.stopPropagation();
+      selectPasalItem(item);
+    }
+    return;
+  }
+  if (!e.target.closest('.pasal-combobox') && !e.target.closest('.pasal-combobox-dropdown')) {
+    closeAllPasalDropdowns();
+  }
+}, true);
 
 // ── Clear form
 btnClear.addEventListener('click', () => {
