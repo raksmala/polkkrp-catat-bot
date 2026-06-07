@@ -344,7 +344,17 @@
   }
 
   /* Pasal entries & combobox */
-  .pasal-entry { grid-template-columns: 1fr 36px; }
+  .pasal-entry {
+    grid-template-columns: 1fr 36px;
+    position: relative;
+    z-index: 1;
+  }
+  .pasal-entry.is-open { z-index: 1000; }
+  .barang-list:has(.pasal-entry),
+  .field-group:has(.pasal-entry),
+  .form-card:has(.pasal-entry) {
+    overflow: visible;
+  }
   .pasal-combobox {
     position: relative;
     display: flex;
@@ -379,15 +389,13 @@
     box-shadow: inset 0 0 0 1px var(--accent);
   }
   .pasal-combobox-dropdown {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0; right: 0;
+    position: fixed;
     max-height: 240px;
     overflow-y: auto;
     background: var(--bg-2);
     border: 1px solid var(--border-hi);
     border-radius: var(--radius-sm);
-    z-index: 50;
+    z-index: 10000;
     box-shadow: 0 8px 24px rgba(0,0,0,.45);
   }
   .pasal-combobox-dropdown.hidden { display: none; }
@@ -1462,12 +1470,30 @@ function closeAllPasalDropdowns(exceptCombo) {
   formArea.querySelectorAll('.pasal-combobox').forEach(combo => {
     if (exceptCombo && combo === exceptCombo) return;
     combo.classList.remove('open');
+    const wrap = combo.closest('[data-pasal-wrap]');
+    if (wrap) wrap.classList.remove('is-open');
     const dd = combo.querySelector('.pasal-combobox-dropdown');
-    if (dd) dd.classList.add('hidden');
+    if (dd) {
+      dd.classList.add('hidden');
+      if (dd._ownerCombo === combo) {
+        combo.appendChild(dd);
+        dd._ownerCombo = null;
+      }
+    }
   });
 }
 
+function positionPasalDropdown(combo, dropdown, input) {
+  const rect = input.getBoundingClientRect();
+  dropdown.style.top = `${rect.bottom + 4}px`;
+  dropdown.style.left = `${rect.left}px`;
+  dropdown.style.width = `${rect.width}px`;
+}
+
 function initPasalCombobox(wrapEl) {
+  if (wrapEl.dataset.pasalInit === '1') return;
+  wrapEl.dataset.pasalInit = '1';
+
   const combo   = wrapEl.querySelector('.pasal-combobox');
   const input   = wrapEl.querySelector('.pasal-combobox-input');
   const toggle  = wrapEl.querySelector('.pasal-combobox-toggle');
@@ -1477,6 +1503,14 @@ function initPasalCombobox(wrapEl) {
   let filtered = pasalList.slice();
   let activeIdx = -1;
 
+  function mountDropdown() {
+    if (dropdown.parentElement !== document.body) {
+      document.body.appendChild(dropdown);
+      dropdown._ownerCombo = combo;
+    }
+    positionPasalDropdown(combo, dropdown, input);
+  }
+
   function openDropdown() {
     closeAllPasalDropdowns(combo);
     filtered = filterPasal(input.value);
@@ -1484,12 +1518,19 @@ function initPasalCombobox(wrapEl) {
     renderPasalDropdownList(dropdown, filtered, activeIdx);
     dropdown.classList.remove('hidden');
     combo.classList.add('open');
+    wrapEl.classList.add('is-open');
+    mountDropdown();
   }
 
   function closeDropdown() {
     dropdown.classList.add('hidden');
     combo.classList.remove('open');
+    wrapEl.classList.remove('is-open');
     activeIdx = -1;
+    if (dropdown._ownerCombo === combo) {
+      combo.appendChild(dropdown);
+      dropdown._ownerCombo = null;
+    }
   }
 
   function selectPasal(kode) {
@@ -1506,6 +1547,13 @@ function initPasalCombobox(wrapEl) {
     }
   }
 
+  function onScrollReposition() {
+    if (!dropdown.classList.contains('hidden')) {
+      positionPasalDropdown(combo, dropdown, input);
+    }
+  }
+
+  toggle.addEventListener('mousedown', (e) => e.preventDefault());
   toggle.addEventListener('click', (e) => {
     e.stopPropagation();
     if (dropdown.classList.contains('hidden')) openDropdown();
@@ -1519,8 +1567,12 @@ function initPasalCombobox(wrapEl) {
     filtered = filterPasal(input.value);
     activeIdx = filtered.length ? 0 : -1;
     renderPasalDropdownList(dropdown, filtered, activeIdx);
+    if (dropdown.classList.contains('hidden')) {
+      combo.classList.add('open');
+      wrapEl.classList.add('is-open');
+    }
     dropdown.classList.remove('hidden');
-    combo.classList.add('open');
+    mountDropdown();
     updatePreview();
   });
 
@@ -1546,9 +1598,18 @@ function initPasalCombobox(wrapEl) {
     }
   });
 
+  dropdown.addEventListener('mousedown', (e) => {
+    const btn = e.target.closest('.pasal-combobox-item');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    selectPasal(btn.dataset.kode);
+  });
+
   dropdown.addEventListener('click', (e) => {
     const btn = e.target.closest('.pasal-combobox-item');
     if (!btn) return;
+    e.stopPropagation();
     selectPasal(btn.dataset.kode);
   });
 
@@ -1558,6 +1619,9 @@ function initPasalCombobox(wrapEl) {
     activeIdx = parseInt(btn.dataset.idx, 10);
     renderPasalDropdownList(dropdown, filtered, activeIdx);
   });
+
+  window.addEventListener('scroll', onScrollReposition, true);
+  window.addEventListener('resize', onScrollReposition);
 }
 
 function initAllPasalComboboxes() {
@@ -1652,6 +1716,7 @@ function handleRemoveBarang(e) {
 
 // ── Add pasal row
 function addPasal() {
+  closeAllPasalDropdowns();
   pasalEntries = syncPasalEntriesFromDOM().concat([{ kode: '' }]);
   const list = document.getElementById('pasalList');
   list.innerHTML = pasalEntries.map((p, j) => pasalRow(j, p.kode)).join('');
@@ -1663,6 +1728,7 @@ function addPasal() {
 function handleRemovePasal(e) {
   const btn = e.target.closest('[data-remove-pasal]');
   if (!btn) return;
+  closeAllPasalDropdowns();
   const i = parseInt(btn.dataset.removePasal, 10);
   const entries = syncPasalEntriesFromDOM().filter((_, idx) => idx !== i);
   pasalEntries = entries.length ? entries : [{ kode: '' }];
@@ -1711,8 +1777,9 @@ previewBody.addEventListener('click', (e) => {
   if (text) copyToClipboard(text);
 });
 
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.pasal-combobox')) closeAllPasalDropdowns();
+document.addEventListener('mousedown', (e) => {
+  if (e.target.closest('.pasal-combobox') || e.target.closest('.pasal-combobox-dropdown')) return;
+  closeAllPasalDropdowns();
 });
 
 // ── Clear form
