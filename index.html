@@ -343,6 +343,174 @@
     color: var(--accent);
   }
 
+  /* Pasal entries & combobox */
+  .pasal-entry { grid-template-columns: 1fr 36px; }
+  .pasal-combobox {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+  }
+  .pasal-combobox-input {
+    flex: 1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+    text-transform: none;
+    padding-right: 10px;
+  }
+  .pasal-combobox-toggle {
+    width: 36px;
+    flex-shrink: 0;
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    border-left: none;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    color: var(--text-2);
+    cursor: pointer;
+    font-size: 10px;
+    transition: background var(--transition), color var(--transition);
+  }
+  .pasal-combobox-toggle:hover { background: var(--bg-3); color: var(--text-0); }
+  .pasal-combobox.open .pasal-combobox-input,
+  .pasal-combobox.open .pasal-combobox-toggle {
+    border-color: var(--accent);
+  }
+  .pasal-combobox.open .pasal-combobox-toggle {
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .pasal-combobox-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    max-height: 240px;
+    overflow-y: auto;
+    background: var(--bg-2);
+    border: 1px solid var(--border-hi);
+    border-radius: var(--radius-sm);
+    z-index: 50;
+    box-shadow: 0 8px 24px rgba(0,0,0,.45);
+  }
+  .pasal-combobox-dropdown.hidden { display: none; }
+  .pasal-combobox-group {
+    padding: 8px 12px 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--text-2);
+    position: sticky;
+    top: 0;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .pasal-combobox-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 9px 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-0);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background var(--transition);
+    line-height: 1.35;
+  }
+  .pasal-combobox-item:hover,
+  .pasal-combobox-item.active {
+    background: var(--bg-4);
+    color: var(--accent);
+  }
+  .pasal-combobox-empty {
+    padding: 14px 12px;
+    font-size: 12px;
+    color: var(--text-2);
+    text-align: center;
+  }
+  .form-error {
+    padding: 12px 14px;
+    background: var(--red-dim);
+    border: 1px solid rgba(240,82,82,.3);
+    border-radius: var(--radius-sm);
+    color: var(--red);
+    font-size: 12px;
+  }
+
+  /* Pasal preview blocks */
+  .pasal-preview { display: flex; flex-direction: column; gap: 12px; }
+  .result-block {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .result-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: var(--bg-3);
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+  .result-block-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-0);
+    padding: 10px 12px;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+  }
+  .result-summary {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .result-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .result-summary-label { color: var(--text-2); font-weight: 600; }
+  .result-summary-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--green);
+    text-align: right;
+  }
+  .result-summary-note {
+    font-size: 11px;
+    color: var(--yellow);
+    line-height: 1.4;
+  }
+  .btn-copy-sm {
+    padding: 4px 10px;
+    background: var(--bg-4);
+    border: 1px solid var(--border-hi);
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    flex-shrink: 0;
+  }
+  .btn-copy-sm:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+
   /* ─── PREVIEW ────────────────────────────────────────── */
   .preview {
     grid-area: preview;
@@ -664,6 +832,14 @@
         <span class="tpl-file">senjata-ilegal.md</span>
       </div>
     </button>
+
+    <button class="tpl-btn" data-tpl="pasal">
+      <div class="tpl-icon">⚖️</div>
+      <div class="tpl-name">
+        Pasal
+        <span class="tpl-file">undang-undang.json</span>
+      </div>
+    </button>
   </nav>
 
   <!-- ── MAIN FORM ── -->
@@ -718,6 +894,11 @@ const NS = 'kotakita_';
 // ── State
 let activeTpl = null;
 let barangEntries = [{ nama: '', jumlah: '' }];
+let pasalEntries = [{ kode: '' }];
+let uuData = null;
+let pasalList = [];
+let pasalLookup = {};
+const MAX_PENJARA = 40;
 
 // ── DOM refs
 const sidebar    = document.getElementById('sidebar');
@@ -760,6 +941,12 @@ const TEMPLATES = {
     icon:  '⚠️',
     fields: ['nama_suspect', 'serial_number', 'keterangan'],
   },
+  pasal: {
+    title: 'Pasal',
+    desc:  'Generate daftar pasal, invoice, dan masa penjara.',
+    icon:  '⚖️',
+    fields: ['nama_suspect', '_pasal'],
+  },
 };
 
 function upperStr(v) {
@@ -769,6 +956,7 @@ function upperStr(v) {
 function enforceUppercase(e) {
   const el = e.target;
   if (el.tagName !== 'INPUT' || el.type !== 'text') return;
+  if (el.classList.contains('pasal-combobox-input')) return;
   const start = el.selectionStart;
   const end = el.selectionEnd;
   const upper = el.value.toUpperCase();
@@ -776,6 +964,125 @@ function enforceUppercase(e) {
     el.value = upper;
     el.setSelectionRange(start, end);
   }
+}
+
+// ── Undang-undang data
+async function loadUndangUndang() {
+  try {
+    const res = await fetch('undang-undang.json');
+    if (!res.ok) throw new Error('fetch failed');
+    uuData = await res.json();
+    pasalList = [];
+    pasalLookup = {};
+    for (const kat of uuData.kategori) {
+      for (const p of kat.pasal) {
+        const item = { ...p, kategori: kat.kategori };
+        pasalList.push(item);
+        pasalLookup[p.kode] = item;
+      }
+    }
+  } catch {
+    uuData = null;
+    pasalList = [];
+    pasalLookup = {};
+  }
+}
+
+function pasalLabel(kode) {
+  const p = pasalLookup[kode];
+  return p ? `${p.kode} — ${p.pelanggaran}` : '';
+}
+
+function formatRupiah(n) {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+function filterPasal(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return pasalList.slice();
+  return pasalList.filter(p =>
+    p.kode.toLowerCase().includes(q) ||
+    p.pelanggaran.toLowerCase().includes(q) ||
+    p.kategori.toLowerCase().includes(q)
+  );
+}
+
+function parsePenjaraBulan(str) {
+  if (!str) return 0;
+  const m = String(str).match(/(\d+)\s*bulan/i);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
+function calcPasalResults(pasalObjects) {
+  const numerics = pasalObjects
+    .map(p => p.denda)
+    .filter(d => typeof d === 'number');
+  let baseInvoice = numerics.length ? Math.max(...numerics) : 0;
+  const has2xInvoice = pasalObjects.some(p =>
+    typeof p.denda === 'string' && /2\s*x\s*invoice/i.test(p.denda));
+  if (has2xInvoice) baseInvoice *= 2;
+
+  let rawBulan = pasalObjects.reduce((sum, p) => sum + parsePenjaraBulan(p.penjara), 0);
+  const hasDpo = pasalObjects.some(p =>
+    typeof p.penjara === 'string' && /x2\s*masa\s*tahanan/i.test(p.penjara));
+  if (hasDpo) rawBulan *= 2;
+  const penjaraBulan = Math.min(rawBulan, MAX_PENJARA);
+
+  return {
+    invoice: baseInvoice,
+    has2xInvoice,
+    rawBulan,
+    penjaraBulan,
+    capped: rawBulan > MAX_PENJARA,
+    hasDpo,
+    only2xNoBase: has2xInvoice && numerics.length === 0,
+  };
+}
+
+function getSelectedPasalObjects(entries) {
+  const seen = new Set();
+  const result = [];
+  for (const e of entries) {
+    const kode = e.kode || '';
+    if (!kode || seen.has(kode)) continue;
+    const p = pasalLookup[kode];
+    if (p) {
+      seen.add(kode);
+      result.push(p);
+    }
+  }
+  return result;
+}
+
+function formatPasalNames(pasalObjects) {
+  const seen = new Set();
+  const names = [];
+  for (const p of pasalObjects) {
+    if (!seen.has(p.pelanggaran)) {
+      seen.add(p.pelanggaran);
+      names.push(p.pelanggaran);
+    }
+  }
+  return names.join(', ') || '—';
+}
+
+function buildPasalOutputs(vals) {
+  const pasalObjects = getSelectedPasalObjects(vals._pasal || []);
+  const names = formatPasalNames(pasalObjects);
+  const suspect = vals.nama_suspect || '—';
+  const format1Body = `${suspect} | ${names}`;
+  const format2Body = names;
+  return {
+    pasalObjects,
+    format1: '```\n' + format1Body + '\n```',
+    format2: '```\n' + format2Body + '\n```',
+    calc: calcPasalResults(pasalObjects),
+  };
 }
 
 // ── Format output for each template (exact spacing as spec)
@@ -840,13 +1147,29 @@ function collectValues() {
       };
     });
   }
+  if (activeTpl === 'pasal') {
+    vals._pasal = syncPasalEntriesFromDOM();
+  }
   return vals;
+}
+
+function syncPasalEntriesFromDOM() {
+  return [...formArea.querySelectorAll('[data-pasal-wrap]')].map(wrap => ({
+    kode: wrap.dataset.pasalKode || '',
+  }));
 }
 
 // ── Update live preview
 function updatePreview() {
   if (!activeTpl) return;
-  const vals   = collectValues();
+  const vals = collectValues();
+
+  if (activeTpl === 'pasal') {
+    updatePasalPreview(vals);
+    saveStorage();
+    return;
+  }
+
   const output = formatOutput(activeTpl, vals);
   const chars  = output.length;
 
@@ -870,11 +1193,65 @@ function updatePreview() {
       </div>
     </div>`;
 
-  // Set text via textContent to avoid HTML injection
   document.getElementById('discordText').textContent = output;
-
-  // Persist values
   saveStorage();
+}
+
+function updatePasalPreview(vals) {
+  const { format1, format2, calc, pasalObjects } = buildPasalOutputs(vals);
+  const hasContent = pasalObjects.length > 0 || (vals.nama_suspect || '').trim();
+
+  btnCopy.disabled = true;
+  charCounter.innerHTML = pasalObjects.length
+    ? `<span>${pasalObjects.length}</span> pasal`
+    : '0 pasal';
+
+  let penjaraText = calc.penjaraBulan > 0
+    ? `${calc.penjaraBulan} bulan${calc.capped ? ' (maks)' : ''}`
+    : '—';
+
+  let notes = [];
+  if (calc.capped) notes.push(`Akumulasi ${calc.rawBulan} bulan → dibatasi ${MAX_PENJARA} bulan`);
+  if (calc.only2xNoBase) notes.push('Multiplier 2x Invoice butuh pasal dengan denda numerik');
+  if (calc.has2xInvoice && !calc.only2xNoBase) notes.push('Denda ×2 (Pasal 7.9)');
+  if (calc.hasDpo) notes.push('Masa tahanan ×2 (DPO)');
+
+  const notesHtml = notes.length
+    ? `<div class="result-summary-note">${notes.map(escHtml).join('<br>')}</div>`
+    : '';
+
+  previewBody.innerHTML = hasContent ? `
+    <div class="pasal-preview">
+      <div class="result-block">
+        <div class="result-block-header">
+          <span>Suspect | Pasal</span>
+          <button class="btn-copy-sm" type="button" data-copy-target="format1">📋 Copy</button>
+        </div>
+        <pre class="result-block-code">${escHtml(format1)}</pre>
+      </div>
+      <div class="result-block">
+        <div class="result-block-header">
+          <span>Pasal Saja</span>
+          <button class="btn-copy-sm" type="button" data-copy-target="format2">📋 Copy</button>
+        </div>
+        <pre class="result-block-code">${escHtml(format2)}</pre>
+      </div>
+      <div class="result-summary">
+        <div class="result-summary-row">
+          <span class="result-summary-label">Invoice</span>
+          <span class="result-summary-value">${escHtml(formatRupiah(calc.invoice))}</span>
+        </div>
+        <div class="result-summary-row">
+          <span class="result-summary-label">Masa Penjara</span>
+          <span class="result-summary-value">${escHtml(penjaraText)}</span>
+        </div>
+        ${notesHtml}
+      </div>
+    </div>` : `
+    <div class="preview-empty">
+      <div class="preview-empty-icon">⚖️</div>
+      <div>Isi nama suspect dan<br>pilih pasal untuk preview.</div>
+    </div>`;
 }
 
 // ── Save to localStorage
@@ -905,6 +1282,12 @@ function buildForm(tpl) {
     }));
   } else if (tpl === 'barang') {
     barangEntries = [{ nama: '', jumlah: '' }];
+  }
+
+  if (tpl === 'pasal' && saved._pasal && saved._pasal.length) {
+    pasalEntries = saved._pasal.map(p => ({ kode: p.kode || '' }));
+  } else if (tpl === 'pasal') {
+    pasalEntries = [{ kode: '' }];
   }
 
   let html = '<div class="form-card">';
@@ -950,6 +1333,23 @@ function buildForm(tpl) {
       html += field('text', 'nama_suspect', 'Nama Suspect', upperStr(saved.nama_suspect || ''), 'Contoh: MALA MORGENSTER');
       html += field('text', 'serial_number', 'Serial Number', upperStr(saved.serial_number || ''), 'Contoh: SN-12345');
       html += field('text', 'keterangan', 'Keterangan', upperStr(saved.keterangan || ''), 'Contoh: PZI, PERAMPOKAN WARUNG');
+      break;
+
+    /* ── pasal ── */
+    case 'pasal':
+      if (!uuData) {
+        html += '<div class="form-error">Gagal memuat undang-undang.json. Pastikan file ada dan dibuka via HTTP server (XAMPP).</div>';
+      } else {
+        html += field('text', 'nama_suspect', 'Nama Suspect', upperStr(saved.nama_suspect || ''), 'Contoh: MALA MORGENSTER');
+        html += `
+          <div class="field-group">
+            <label>Pasal <span class="required">*</span></label>
+            <div class="barang-list" id="pasalList">
+              ${pasalEntries.map((p, i) => pasalRow(i, p.kode)).join('')}
+            </div>
+            <button class="btn-add-barang" id="btnAddPasal" type="button">＋ Tambah Pasal</button>
+          </div>`;
+      }
       break;
   }
 
@@ -1005,6 +1405,26 @@ function barangRow(i, nama, jumlah) {
     </div>`;
 }
 
+function pasalRow(i, selectedKode) {
+  const label = pasalLabel(selectedKode);
+  return `
+    <div class="barang-entry pasal-entry" data-pasal-wrap="${i}" data-pasal-kode="${escAttr(selectedKode)}">
+      <div class="pasal-combobox" data-pasal-combobox="${i}">
+        <input
+          type="text"
+          class="pasal-combobox-input"
+          data-pasal-input="${i}"
+          placeholder="Cari pasal (kode / pelanggaran)..."
+          value="${escAttr(label)}"
+          autocomplete="off"
+        />
+        <button type="button" class="pasal-combobox-toggle" data-pasal-toggle="${i}" aria-label="Buka daftar pasal">▼</button>
+        <div class="pasal-combobox-dropdown hidden" data-pasal-dropdown="${i}"></div>
+      </div>
+      <button class="btn-remove-barang" data-remove-pasal="${i}" aria-label="Hapus" type="button">✕</button>
+    </div>`;
+}
+
 function escAttr(str) {
   return String(str || '')
     .replace(/&/g, '&amp;')
@@ -1012,6 +1432,143 @@ function escAttr(str) {
     .replace(/'/g, '&#39;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+function escHtml(str) {
+  return escAttr(str);
+}
+
+function renderPasalDropdownList(listEl, items, activeIdx) {
+  if (!items.length) {
+    listEl.innerHTML = '<div class="pasal-combobox-empty">Pasal tidak ditemukan</div>';
+    return;
+  }
+  const groups = new Map();
+  items.forEach((p, idx) => {
+    if (!groups.has(p.kategori)) groups.set(p.kategori, []);
+    groups.get(p.kategori).push({ p, idx });
+  });
+  let html = '';
+  for (const [kat, entries] of groups) {
+    html += `<div class="pasal-combobox-group">${escHtml(kat)}</div>`;
+    for (const { p, idx } of entries) {
+      html += `<button type="button" class="pasal-combobox-item${idx === activeIdx ? ' active' : ''}" data-kode="${escAttr(p.kode)}" data-idx="${idx}">${escHtml(p.kode)} — ${escHtml(p.pelanggaran)}</button>`;
+    }
+  }
+  listEl.innerHTML = html;
+}
+
+function closeAllPasalDropdowns(exceptCombo) {
+  formArea.querySelectorAll('.pasal-combobox').forEach(combo => {
+    if (exceptCombo && combo === exceptCombo) return;
+    combo.classList.remove('open');
+    const dd = combo.querySelector('.pasal-combobox-dropdown');
+    if (dd) dd.classList.add('hidden');
+  });
+}
+
+function initPasalCombobox(wrapEl) {
+  const combo   = wrapEl.querySelector('.pasal-combobox');
+  const input   = wrapEl.querySelector('.pasal-combobox-input');
+  const toggle  = wrapEl.querySelector('.pasal-combobox-toggle');
+  const dropdown = wrapEl.querySelector('.pasal-combobox-dropdown');
+  if (!combo || !input || !toggle || !dropdown) return;
+
+  let filtered = pasalList.slice();
+  let activeIdx = -1;
+
+  function openDropdown() {
+    closeAllPasalDropdowns(combo);
+    filtered = filterPasal(input.value);
+    activeIdx = filtered.length ? 0 : -1;
+    renderPasalDropdownList(dropdown, filtered, activeIdx);
+    dropdown.classList.remove('hidden');
+    combo.classList.add('open');
+  }
+
+  function closeDropdown() {
+    dropdown.classList.add('hidden');
+    combo.classList.remove('open');
+    activeIdx = -1;
+  }
+
+  function selectPasal(kode) {
+    wrapEl.dataset.pasalKode = kode;
+    input.value = pasalLabel(kode);
+    closeDropdown();
+    updatePreview();
+  }
+
+  function restoreLabelIfNeeded() {
+    const kode = wrapEl.dataset.pasalKode || '';
+    if (kode && input.value !== pasalLabel(kode)) {
+      wrapEl.dataset.pasalKode = '';
+    }
+  }
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (dropdown.classList.contains('hidden')) openDropdown();
+    else closeDropdown();
+  });
+
+  input.addEventListener('focus', () => openDropdown());
+
+  input.addEventListener('input', () => {
+    restoreLabelIfNeeded();
+    filtered = filterPasal(input.value);
+    activeIdx = filtered.length ? 0 : -1;
+    renderPasalDropdownList(dropdown, filtered, activeIdx);
+    dropdown.classList.remove('hidden');
+    combo.classList.add('open');
+    updatePreview();
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (dropdown.classList.contains('hidden')) openDropdown();
+      else if (filtered.length) {
+        activeIdx = Math.min(activeIdx + 1, filtered.length - 1);
+        renderPasalDropdownList(dropdown, filtered, activeIdx);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (filtered.length) {
+        activeIdx = Math.max(activeIdx - 1, 0);
+        renderPasalDropdownList(dropdown, filtered, activeIdx);
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (activeIdx >= 0 && filtered[activeIdx]) selectPasal(filtered[activeIdx].kode);
+    } else if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  dropdown.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pasal-combobox-item');
+    if (!btn) return;
+    selectPasal(btn.dataset.kode);
+  });
+
+  dropdown.addEventListener('mouseover', (e) => {
+    const btn = e.target.closest('.pasal-combobox-item');
+    if (!btn) return;
+    activeIdx = parseInt(btn.dataset.idx, 10);
+    renderPasalDropdownList(dropdown, filtered, activeIdx);
+  });
+}
+
+function initAllPasalComboboxes() {
+  formArea.querySelectorAll('[data-pasal-wrap]').forEach(initPasalCombobox);
+}
+
+function attachPasalEvents() {
+  const btnAdd = document.getElementById('btnAddPasal');
+  if (btnAdd) btnAdd.addEventListener('click', addPasal);
+  formArea.addEventListener('click', handleRemovePasal);
+  initAllPasalComboboxes();
 }
 
 // ── Activate a template
@@ -1041,6 +1598,10 @@ function activateTemplate(tpl) {
     formArea.addEventListener('click', handleRemoveBarang);
   }
 
+  if (tpl === 'pasal' && uuData) {
+    attachPasalEvents();
+  }
+
   uppercaseAllTextInputs();
   updatePreview();
 }
@@ -1052,6 +1613,7 @@ function onFormInput(e) {
 
 function uppercaseAllTextInputs() {
   formArea.querySelectorAll('input[type="text"]').forEach(el => {
+    if (el.classList.contains('pasal-combobox-input')) return;
     el.value = upperStr(el.value);
   });
 }
@@ -1088,25 +1650,35 @@ function handleRemoveBarang(e) {
   updatePreview();
 }
 
-// ── Copy to clipboard
-btnCopy.addEventListener('click', () => {
-  if (!activeTpl) return;
-  const vals   = collectValues();
-  const output = formatOutput(activeTpl, vals);
-  if (!output) return;
+// ── Add pasal row
+function addPasal() {
+  pasalEntries = syncPasalEntriesFromDOM().concat([{ kode: '' }]);
+  const list = document.getElementById('pasalList');
+  list.innerHTML = pasalEntries.map((p, j) => pasalRow(j, p.kode)).join('');
+  initAllPasalComboboxes();
+  updatePreview();
+}
 
-  navigator.clipboard.writeText(output).then(() => {
-    btnCopy.classList.add('copied');
-    btnCopy.textContent = '✓ Disalin!';
+// ── Remove pasal row
+function handleRemovePasal(e) {
+  const btn = e.target.closest('[data-remove-pasal]');
+  if (!btn) return;
+  const i = parseInt(btn.dataset.removePasal, 10);
+  const entries = syncPasalEntriesFromDOM().filter((_, idx) => idx !== i);
+  pasalEntries = entries.length ? entries : [{ kode: '' }];
+  const list = document.getElementById('pasalList');
+  list.innerHTML = pasalEntries.map((p, j) => pasalRow(j, p.kode)).join('');
+  initAllPasalComboboxes();
+  updatePreview();
+}
+
+function copyToClipboard(text) {
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
     showToast();
-    setTimeout(() => {
-      btnCopy.classList.remove('copied');
-      btnCopy.innerHTML = '📋 Copy';
-    }, 2000);
   }).catch(() => {
-    // Fallback for older browsers
     const ta = document.createElement('textarea');
-    ta.value = output;
+    ta.value = text;
     ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
     document.body.appendChild(ta);
     ta.focus(); ta.select();
@@ -1114,12 +1686,40 @@ btnCopy.addEventListener('click', () => {
     document.body.removeChild(ta);
     showToast();
   });
+}
+
+// ── Copy to clipboard
+btnCopy.addEventListener('click', () => {
+  if (!activeTpl || activeTpl === 'pasal') return;
+  const vals   = collectValues();
+  const output = formatOutput(activeTpl, vals);
+  if (!output) return;
+  copyToClipboard(output);
+  btnCopy.classList.add('copied');
+  btnCopy.textContent = '✓ Disalin!';
+  setTimeout(() => {
+    btnCopy.classList.remove('copied');
+    btnCopy.innerHTML = '📋 Copy';
+  }, 2000);
+});
+
+previewBody.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-copy-target]');
+  if (!btn || activeTpl !== 'pasal') return;
+  const outputs = buildPasalOutputs(collectValues());
+  const text = outputs[btn.dataset.copyTarget];
+  if (text) copyToClipboard(text);
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.pasal-combobox')) closeAllPasalDropdowns();
 });
 
 // ── Clear form
 btnClear.addEventListener('click', () => {
   if (!activeTpl) return;
   barangEntries = [{ nama: '', jumlah: '' }];
+  pasalEntries = [{ kode: '' }];
   localStorage.removeItem(NS + 'vals_' + activeTpl);
   formArea.innerHTML = buildForm(activeTpl);
   formArea.addEventListener('input', onFormInput);
@@ -1128,6 +1728,9 @@ btnClear.addEventListener('click', () => {
   if (activeTpl === 'barang') {
     document.getElementById('btnAddBarang').addEventListener('click', addBarang);
     formArea.addEventListener('click', handleRemoveBarang);
+  }
+  if (activeTpl === 'pasal' && uuData) {
+    attachPasalEvents();
   }
   updatePreview();
 });
@@ -1177,7 +1780,8 @@ function closeMobile() {
 }
 
 // ── Restore last used template on load
-(function init() {
+(async function init() {
+  await loadUndangUndang();
   const lastTpl = localStorage.getItem(NS + 'tpl');
   if (lastTpl && TEMPLATES[lastTpl]) {
     activateTemplate(lastTpl);

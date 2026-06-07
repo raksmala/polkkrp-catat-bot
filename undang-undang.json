@@ -1,0 +1,552 @@
+{
+  "judul": "Undang-Undang Kepolisian Kota Kita",
+  "kategori": [
+    {
+      "kategori": "Pelanggaran Ringan",
+      "pasal": [
+        {
+          "kode": "1",
+          "pelanggaran": "Penggunaan Klakson Kepolisian",
+          "denda": 100000,
+          "penjara": null,
+          "keterangan": "Pencabutan Kabel Klakson"
+        },
+        {
+          "kode": "1.1",
+          "pelanggaran": "Ugal-Ugalan Saat Berkendara",
+          "denda": 15000,
+          "penjara": null,
+          "keterangan": "Penyitaan Kendaraan"
+        },
+        {
+          "kode": "1.2",
+          "pelanggaran": "Mabuk Saat Berkendara",
+          "denda": 20000,
+          "penjara": null,
+          "keterangan": "Penyitaan Kendaraan + Hukuman Sosial"
+        },
+        {
+          "kode": "1.3",
+          "pelanggaran": "Mengemudi Melebihi Kecepatan (Penggunaan NOS di Area Perkotaan)",
+          "denda": 20000,
+          "penjara": null,
+          "keterangan": "Penyitaan Kendaraan / Hukuman Sosial"
+        },
+        {
+          "kode": "1.4",
+          "pelanggaran": "Tidak Membawa / Tidak Punya Surat Kendaraan",
+          "denda": 20000,
+          "penjara": null,
+          "keterangan": "Penyitaan Kendaraan / Hukuman Sosial"
+        },
+        {
+          "kode": "1.5",
+          "pelanggaran": "Tidak Mematuhi Rambu Lalu Lintas",
+          "denda": 15000,
+          "penjara": null,
+          "keterangan": "Hukuman Sosial"
+        },
+        {
+          "kode": "1.6",
+          "pelanggaran": "Tidak Melengkapi Atribut Berkendara",
+          "denda": 15000,
+          "penjara": null,
+          "keterangan": "Hukuman Sosial"
+        },
+        {
+          "kode": "1.7",
+          "pelanggaran": "Balapan Liar",
+          "denda": 50000,
+          "penjara": null,
+          "keterangan": "Penyitaan Kendaraan"
+        },
+        {
+          "kode": "1.8",
+          "pelanggaran": "Tidak Memiliki / Tidak Membawa KTP",
+          "denda": 30000,
+          "penjara": "5 bulan",
+          "keterangan": "Hukuman Sosial / 5 Bulan Penjara"
+        },
+        {
+          "kode": "1.9",
+          "pelanggaran": "Memberikan Informasi Palsu dan atau Berita Bohong Melalui Media Sosial (Delik Aduan)",
+          "denda": 30000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "2.0",
+          "pelanggaran": "Mencorat-Coret Fasilitas Umum / Segala Bentuk Vandalisme Tanpa Izin",
+          "denda": 50000,
+          "penjara": null,
+          "keterangan": "Hukuman Sosial"
+        },
+        {
+          "kode": "2.1",
+          "pelanggaran": "Melakukan Aksi Demo Tanpa Izin",
+          "denda": 80000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        }
+      ]
+    },
+    {
+      "kategori": "Pelanggaran Sedang",
+      "pasal": [
+        {
+          "kode": "2.2",
+          "pelanggaran": "Upaya Melawan Petugas Kepolisian",
+          "denda": 35000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "2.3",
+          "pelanggaran": "Upaya Membunuh / Pembunuhan Warga Lokal / Setempat",
+          "denda": 25000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "2.4",
+          "pelanggaran": "Berada di Zona Ilegal / Tempat Terlarang",
+          "denda": 25000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "2.5",
+          "pelanggaran": "Menggunakan Atribut Kepolisian",
+          "denda": 100000,
+          "penjara": "25 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "2.6",
+          "pelanggaran": "Memberikan Informasi Palsu",
+          "denda": 25000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "2.7",
+          "pelanggaran": "Mencuri / Merusak Kendaraan Warga Kota Kita",
+          "denda": 20000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "2.8",
+          "pelanggaran": "Memakai / Penipuan Menggunakan Topeng di Tempat Umum",
+          "denda": 25000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "2.9",
+          "pelanggaran": "Memukul Warga Kota Kita",
+          "denda": 5000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.0",
+          "pelanggaran": "Melakukan Tindakan atau Ucapan Tidak Sopan",
+          "denda": 10000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.1",
+          "pelanggaran": "Penggunaan Helikopter Tanpa Lisensi",
+          "denda": 50000,
+          "penjara": null,
+          "keterangan": "Komdis Internal Instansi"
+        },
+        {
+          "kode": "3.2",
+          "pelanggaran": "Membawa Alkohol",
+          "denda": 50000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.3",
+          "pelanggaran": "Mabuk / Telanjang di Tempat Umum",
+          "denda": 10000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.4",
+          "pelanggaran": "Membawa Bibit Ilegal (Singkong / Borax / Jamur)",
+          "denda": 30000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.5",
+          "pelanggaran": "Membawa Barang Ilegal Mentah < 120",
+          "denda": 15000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.6",
+          "pelanggaran": "Membawa Barang Ilegal Mentah 120–240",
+          "denda": 30000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.7",
+          "pelanggaran": "Membawa Barang Ilegal Mentah 240–580",
+          "denda": 45000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.8",
+          "pelanggaran": "Membawa Barang Ilegal Mentah > 580",
+          "denda": 80000,
+          "penjara": "20 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "3.9",
+          "pelanggaran": "Membawa Barang Ilegal Siap Pakai < 15",
+          "denda": 65000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.0",
+          "pelanggaran": "Membawa Barang Ilegal Siap Pakai 15–30",
+          "denda": 75000,
+          "penjara": "7 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.1",
+          "pelanggaran": "Membawa Barang Ilegal Siap Pakai > 30",
+          "denda": 80000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.2",
+          "pelanggaran": "Membawa Uang Kotor 1–400.000",
+          "denda": 30000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.3",
+          "pelanggaran": "Membawa Uang Kotor 400.000–1.000.000",
+          "denda": 45000,
+          "penjara": "8 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.4",
+          "pelanggaran": "Membawa Uang Kotor > 1.000.000",
+          "denda": 60000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.5",
+          "pelanggaran": "Membawa Barang Ilegal (Chip, Vest, Peluru)",
+          "denda": 50000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.6",
+          "pelanggaran": "Pemburuan Ilegal / Tidak Memiliki Lisensi Berburu",
+          "denda": 40000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.7",
+          "pelanggaran": "Pencurian Kendaraan Ilegal Kota Kita",
+          "denda": 30000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.8",
+          "pelanggaran": "Upaya Melindungi, Menyembunyikan dan Membantu Pelaku Tindak Kriminal",
+          "denda": 35000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "4.9",
+          "pelanggaran": "Ujaran Kebencian / Provokasi, Tindakan/Berbicara Tidak Sopan terhadap Kepolisian",
+          "denda": 80000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.0",
+          "pelanggaran": "Tindakan Tidak Menyenangkan (Delik Aduan)",
+          "denda": 60000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.1",
+          "pelanggaran": "Mencuri / Merampas KTP (Identitas) Warga",
+          "denda": 50000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.2",
+          "pelanggaran": "Menangkap Satwa Laut Dilindungi (Ilegal Fishing)",
+          "denda": 40000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.3",
+          "pelanggaran": "Ujaran Kebencian dan atau Ancaman Kekerasan Melalui Media Sosial (Delik Aduan)",
+          "denda": 60000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.4",
+          "pelanggaran": "Membawa atau Memiliki Peluru dengan Serial Number POL",
+          "denda": 80000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.5",
+          "pelanggaran": "Melakukan Tindakan Anarkis pada Saat Aksi Demo",
+          "denda": 100000,
+          "penjara": "20 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.6",
+          "pelanggaran": "Dengan Sengaja Tidak Memasang Plat Kendaraan Roda 4",
+          "denda": 50000,
+          "penjara": null,
+          "keterangan": "Disita / Tidak Boleh Digunakan Selama Plat Belum Terpasang"
+        },
+        {
+          "kode": "5.7",
+          "pelanggaran": "Melakukan Penipuan terhadap Warga (Delik Aduan)",
+          "denda": 35000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.8",
+          "pelanggaran": "Melakukan Pencurian / Mencuri / Mengambil Barang Milik Orang Lain",
+          "denda": 20000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "5.9",
+          "pelanggaran": "Pencekokan Barang Haram ke Warga",
+          "denda": 100000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.0",
+          "pelanggaran": "Menyelipkan Barang Ilegal kepada Warga",
+          "denda": 70000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.1",
+          "pelanggaran": "Membawa Senjata Rakitan Ilegal Tumpul/Tajam",
+          "denda": 25000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        }
+      ]
+    },
+    {
+      "kategori": "Pelanggaran Berat",
+      "pasal": [
+        {
+          "kode": "6.2",
+          "pelanggaran": "Tidak Memiliki Lisensi Senjata",
+          "denda": 45000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.3",
+          "pelanggaran": "Jual Beli Senjata Ilegal",
+          "denda": 55000,
+          "penjara": "30 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.4",
+          "pelanggaran": "Penembakan / Upaya Pembunuhan terhadap Warga Kota Kita",
+          "denda": 30000,
+          "penjara": "5 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.5",
+          "pelanggaran": "Penyanderaan / Penodongan terhadap Warga Kota Kita",
+          "denda": 40000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.6",
+          "pelanggaran": "Penodongan / Penyanderaan terhadap Kepolisian Kota Kita",
+          "denda": 60000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.7",
+          "pelanggaran": "Kepemilikan Senjata Ilegal",
+          "denda": 50000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.8",
+          "pelanggaran": "Kepemilikan Senjata Negara / Kepolisian Kota Kita",
+          "denda": 5000000,
+          "penjara": "40 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "6.9",
+          "pelanggaran": "Kepemilikan Kendaraan Dinas / Kepolisian Kota Kita",
+          "denda": 2000000,
+          "penjara": "40 bulan",
+          "keterangan": "Perampasan Aset"
+        },
+        {
+          "kode": "7.0",
+          "pelanggaran": "Perampokan Warung / Bersenjata di Warung",
+          "denda": 75000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "7.1",
+          "pelanggaran": "Perampokan Bersenjata di Bank (Bank Besar Kota Kita & Fleeca)",
+          "denda": 100000,
+          "penjara": "25 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "7.2",
+          "pelanggaran": "Perampokan Jewelry / Bersenjata di Jewelry",
+          "denda": 90000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "7.3",
+          "pelanggaran": "Perampokan ATM / Cash Machine",
+          "denda": 65000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "7.4",
+          "pelanggaran": "Tindakan Pencurian Melalui Kekerasan / Ancaman (Pembegalan)",
+          "denda": 20000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "7.5",
+          "pelanggaran": "Menyalahgunakan / Memakai KTP (Identitas) Warga",
+          "denda": 100000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "7.6",
+          "pelanggaran": "Penembakan / Upaya Pembunuhan terhadap Kepolisian Kota Kita",
+          "denda": 100000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "7.7",
+          "pelanggaran": "Baku Tembak / Peperangan Antar Kelompok",
+          "denda": 55000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "7.8",
+          "pelanggaran": "DPO / DPK",
+          "denda": null,
+          "penjara": "DPO: x2 Masa Tahanan",
+          "keterangan": "DPK: Sita Kendaraan 3 Hari"
+        },
+        {
+          "kode": "7.9",
+          "pelanggaran": "Upaya / Menghilangkan Barang Bukti",
+          "denda": "2x Invoice",
+          "penjara": null,
+          "keterangan": null
+        },
+        {
+          "kode": "8.0",
+          "pelanggaran": "Pencemaran Nama Baik dan atau Pelecehan Seksual Melalui Medsos (Delik Aduan)",
+          "denda": 100000,
+          "penjara": "25 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "8.1",
+          "pelanggaran": "Pelecehan Seksual Secara Verbal/Non Verbal (Delik Aduan)",
+          "denda": 100000,
+          "penjara": "15 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "8.2",
+          "pelanggaran": "Menjadi Dalang atau Otak dari Suatu Tindakan Kriminal",
+          "denda": 100000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "8.3",
+          "pelanggaran": "Penyalahgunaan Lisensi Senjata",
+          "denda": 100000,
+          "penjara": "10 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "8.4",
+          "pelanggaran": "Pencekokan Barang Haram ke Pihak Kepolisian",
+          "denda": 100000,
+          "penjara": "30 bulan",
+          "keterangan": null
+        },
+        {
+          "kode": "8.5",
+          "pelanggaran": "Menyelipkan Barang Ilegal kepada Anggota Kepolisian",
+          "denda": 100000,
+          "penjara": "20 bulan",
+          "keterangan": null
+        }
+      ]
+    }
+  ]
+}
