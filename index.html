@@ -899,9 +899,6 @@
 
 'use strict';
 
-// ── Storage key prefix
-const NS = 'kotakita_';
-
 // ── State
 let activeTpl = null;
 let barangEntries = [{ nama: '', jumlah: '' }];
@@ -1177,7 +1174,6 @@ function updatePreview() {
 
   if (activeTpl === 'pasal') {
     updatePasalPreview(vals);
-    saveStorage();
     return;
   }
 
@@ -1205,7 +1201,6 @@ function updatePreview() {
     </div>`;
 
   document.getElementById('discordText').textContent = output;
-  saveStorage();
 }
 
 function updatePasalPreview(vals) {
@@ -1265,38 +1260,10 @@ function updatePasalPreview(vals) {
     </div>`;
 }
 
-// ── Save to localStorage
-function saveStorage() {
-  if (!activeTpl) return;
-  const vals = collectValues();
-  localStorage.setItem(NS + 'tpl',    activeTpl);
-  localStorage.setItem(NS + 'vals_' + activeTpl, JSON.stringify(vals));
-}
-
-// ── Load from localStorage
-function loadStorage(tpl) {
-  try {
-    const raw = localStorage.getItem(NS + 'vals_' + tpl);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
-}
-
 // ── Build form HTML for a template
 function buildForm(tpl) {
-  const saved = loadStorage(tpl);
-
-  // Restore barang entries
-  if (tpl === 'barang' && saved._barang && saved._barang.length) {
-    barangEntries = saved._barang.map(b => ({
-      nama: upperStr(b.nama || ''),
-      jumlah: b.jumlah || '',
-    }));
-  } else if (tpl === 'barang') {
+  if (tpl === 'barang') {
     barangEntries = [{ nama: '', jumlah: '' }];
-  }
-
-  if (tpl === 'pasal' && saved._pasal && saved._pasal.length) {
-    pasalEntries = saved._pasal.map(p => ({ kode: p.kode || '' }));
   } else if (tpl === 'pasal') {
     pasalEntries = [{ kode: '' }];
   }
@@ -1307,7 +1274,7 @@ function buildForm(tpl) {
 
     /* ── barang ── */
     case 'barang':
-      html += field('text', 'nama_suspect', 'Nama Suspect', upperStr(saved.nama_suspect || ''), 'Contoh: MALA MORGENSTER');
+      html += field('text', 'nama_suspect', 'Nama Suspect', '', 'Contoh: MALA MORGENSTER');
       html += `
         <div class="field-group">
           <label>Jenis Barang <span class="required">*</span></label>
@@ -1316,7 +1283,7 @@ function buildForm(tpl) {
           </div>
           <button class="btn-add-barang" id="btnAddBarang" type="button">＋ Tambah Barang</button>
         </div>`;
-      html += field('text', 'keterangan', 'Keterangan', upperStr(saved.keterangan || ''), 'Contoh: PZI, PERAMPOKAN WARUNG, dll');
+      html += field('text', 'keterangan', 'Keterangan', '', 'Contoh: PZI, PERAMPOKAN WARUNG, dll');
       break;
 
     /* ── peluru ── */
@@ -1328,22 +1295,22 @@ function buildForm(tpl) {
         </div>`;
       html += selectField('jenis_peluru', 'Jenis Peluru', [
         '.45 ACP', '.38 LC', '5.56x45', '12 Gauge', '.50 BMG',
-      ], saved.jenis_peluru || '');
-      html += field('number', 'jumlah_peluru', 'Jumlah Peluru (paket)', saved.jumlah_peluru || '', '0');
-      html += selectField('status', 'Status', ['FREE', 'PAID'], saved.status || '');
+      ], '');
+      html += field('number', 'jumlah_peluru', 'Jumlah Peluru (paket)', '', '0');
+      html += selectField('status', 'Status', ['FREE', 'PAID'], '');
       break;
 
     /* ── senjata-apd ── */
     case 'senjata-apd':
-      html += field('text', 'nama', 'Nama', upperStr(saved.nama || ''), 'Contoh: MALA MORGENSTER');
-      html += field('text', 'serial_number', 'Serial Number', upperStr(saved.serial_number || ''), 'Contoh: SN-12345');
+      html += field('text', 'nama', 'Nama', '', 'Contoh: MALA MORGENSTER');
+      html += field('text', 'serial_number', 'Serial Number', '', 'Contoh: SN-12345');
       break;
 
     /* ── senjata-ilegal ── */
     case 'senjata-ilegal':
-      html += field('text', 'nama_suspect', 'Nama Suspect', upperStr(saved.nama_suspect || ''), 'Contoh: MALA MORGENSTER');
-      html += field('text', 'serial_number', 'Serial Number', upperStr(saved.serial_number || ''), 'Contoh: SN-12345');
-      html += field('text', 'keterangan', 'Keterangan', upperStr(saved.keterangan || ''), 'Contoh: PZI, PERAMPOKAN WARUNG');
+      html += field('text', 'nama_suspect', 'Nama Suspect', '', 'Contoh: MALA MORGENSTER');
+      html += field('text', 'serial_number', 'Serial Number', '', 'Contoh: SN-12345');
+      html += field('text', 'keterangan', 'Keterangan', '', 'Contoh: PZI, PERAMPOKAN WARUNG');
       break;
 
     /* ── pasal ── */
@@ -1351,7 +1318,7 @@ function buildForm(tpl) {
       if (!uuData) {
         html += '<div class="form-error">Gagal memuat undang-undang.json. Pastikan file ada dan dibuka via HTTP server (XAMPP).</div>';
       } else {
-        html += field('text', 'nama_suspect', 'Nama Suspect', upperStr(saved.nama_suspect || ''), 'Contoh: MALA MORGENSTER');
+        html += field('text', 'nama_suspect', 'Nama Suspect', '', 'Contoh: MALA MORGENSTER');
         html += `
           <div class="field-group">
             <label>Pasal <span class="required">*</span></label>
@@ -1805,7 +1772,6 @@ btnClear.addEventListener('click', () => {
   if (!activeTpl) return;
   barangEntries = [{ nama: '', jumlah: '' }];
   pasalEntries = [{ kode: '' }];
-  localStorage.removeItem(NS + 'vals_' + activeTpl);
   formArea.innerHTML = buildForm(activeTpl);
   formArea.addEventListener('input', onFormInput);
   formArea.addEventListener('change', onFormInput);
@@ -1864,13 +1830,9 @@ function closeMobile() {
   overlay.classList.add('hidden');
 }
 
-// ── Restore last used template on load
+// ── Init
 (async function init() {
   await loadUndangUndang();
-  const lastTpl = localStorage.getItem(NS + 'tpl');
-  if (lastTpl && TEMPLATES[lastTpl]) {
-    activateTemplate(lastTpl);
-  }
 })();
 </script>
 </body>
