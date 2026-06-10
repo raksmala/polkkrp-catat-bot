@@ -360,7 +360,7 @@
     display: flex;
     align-items: stretch;
   }
-  .pasal-combobox-input {
+  input.pasal-combobox-input[type="text"] {
     flex: 1;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -427,6 +427,7 @@
     cursor: pointer;
     transition: background var(--transition);
     line-height: 1.35;
+    text-transform: none;
   }
   .pasal-combobox-item:hover,
   .pasal-combobox-item.active {
@@ -478,6 +479,7 @@
     white-space: pre-wrap;
     word-break: break-word;
     line-height: 1.5;
+    text-transform: none;
   }
   .result-summary {
     background: var(--bg-2);
@@ -1082,7 +1084,7 @@ function formatPasalNames(pasalObjects) {
 function buildPasalOutputs(vals) {
   const pasalObjects = getSelectedPasalObjects(vals._pasal || []);
   const names = formatPasalNames(pasalObjects);
-  const suspect = vals.nama_suspect || '—';
+  const suspect = (vals.nama_suspect || '').trim() ? upperStr(vals.nama_suspect) : '—';
   const format1Body = `${suspect} | ${names}`;
   const format2Body = names;
   return {
