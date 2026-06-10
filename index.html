@@ -1073,12 +1073,18 @@ function formatPasalNames(pasalObjects) {
   const seen = new Set();
   const names = [];
   for (const p of pasalObjects) {
-    if (!seen.has(p.pelanggaran)) {
-      seen.add(p.pelanggaran);
-      names.push(p.pelanggaran);
+    const name = upperStr(p.pelanggaran);
+    if (!seen.has(name)) {
+      seen.add(name);
+      names.push(name);
     }
   }
   return names.join(', ') || '—';
+}
+
+function normalizePasalFormInputs() {
+  const suspectEl = formArea.querySelector('[data-field="nama_suspect"]');
+  if (suspectEl) suspectEl.value = upperStr(suspectEl.value);
 }
 
 function buildPasalOutputs(vals) {
@@ -1172,13 +1178,14 @@ function syncPasalEntriesFromDOM() {
 // ── Update live preview
 function updatePreview() {
   if (!activeTpl) return;
-  const vals = collectValues();
 
   if (activeTpl === 'pasal') {
-    updatePasalPreview(vals);
+    normalizePasalFormInputs();
+    updatePasalPreview(collectValues());
     return;
   }
 
+  const vals = collectValues();
   const output = formatOutput(activeTpl, vals);
   const chars  = output.length;
 
@@ -1632,6 +1639,7 @@ function activateTemplate(tpl) {
   // Attach events
   formArea.addEventListener('input', onFormInput);
   formArea.addEventListener('change', onFormInput);
+  formArea.addEventListener('paste', onFormInput);
 
   if (tpl === 'barang') {
     document.getElementById('btnAddBarang').addEventListener('click', addBarang);
@@ -1648,6 +1656,13 @@ function activateTemplate(tpl) {
 
 function onFormInput(e) {
   enforceUppercase(e);
+  if (e.type === 'paste' && e.target.dataset?.field === 'nama_suspect') {
+    requestAnimationFrame(() => {
+      e.target.value = upperStr(e.target.value);
+      updatePreview();
+    });
+    return;
+  }
   updatePreview();
 }
 
@@ -1777,6 +1792,7 @@ btnClear.addEventListener('click', () => {
   formArea.innerHTML = buildForm(activeTpl);
   formArea.addEventListener('input', onFormInput);
   formArea.addEventListener('change', onFormInput);
+  formArea.addEventListener('paste', onFormInput);
   uppercaseAllTextInputs();
   if (activeTpl === 'barang') {
     document.getElementById('btnAddBarang').addEventListener('click', addBarang);
