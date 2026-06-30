@@ -1015,7 +1015,7 @@ const TEMPLATES = {
     title: 'Pengambilan Clip',
     desc:  'Generate form pengambilan klip peluru.',
     icon:  '🎬',
-    fields: ['jenis_peluru', 'jumlah_peluru', 'status'],
+    fields: ['nama', 'jenis_peluru', 'jumlah_peluru', 'status'],
   },
   'senjata-apd': {
     title: 'Senjata APD',
@@ -1232,7 +1232,7 @@ function formatOutput(tpl, vals) {
     }
     case 'peluru':
       body =
-        `NAMA LENGKAP  : MALA MORGENSTER\n` +
+        `NAMA LENGKAP  : ${vals.nama || '—'}\n` +
         `JENIS PELURU  : ${vals.jenis_peluru || '—'}\n` +
         `JUMLAH PELURU : ${vals.jumlah_peluru || '—'} paket\n` +
         `STATUS        : ${vals.status || '—'}`;
@@ -1525,11 +1525,7 @@ function buildForm(tpl) {
 
     /* ── peluru ── */
     case 'peluru':
-      html += `
-        <div class="field-group">
-          <label>Nama Lengkap</label>
-          <div class="static-value">MALA MORGENSTER</div>
-        </div>`;
+      html += field('text', 'nama', 'Nama Lengkap', '', 'Contoh: MALA MORGENSTER');
       html += selectField('jenis_peluru', 'Jenis Peluru', [
         '.45 ACP', '.38 LC', '5.56x45', '12 Gauge', '.50 BMG',
       ], '');
