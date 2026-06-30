@@ -43,6 +43,8 @@
     font-family: 'Syne', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   /* ─── LAYOUT ─────────────────────────────────────────── */
@@ -53,7 +55,34 @@
     grid-template-areas:
       "header header header"
       "sidebar main preview";
-    height: 100vh;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ─── FOOTER ─────────────────────────────────────────── */
+  .app-footer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 10px 20px;
+    background: var(--bg-1);
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-2);
+  }
+  .app-footer a {
+    color: var(--text-1);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .app-footer a:hover {
+    color: var(--accent);
+  }
+  .app-footer-sep {
+    opacity: .4;
   }
 
   /* ─── HEADER ─────────────────────────────────────────── */
@@ -921,6 +950,12 @@
   </aside>
 
 </div><!-- .app -->
+
+<footer class="app-footer">
+  <span>Created by <a href="https://github.com/raksmala" target="_blank" rel="noopener noreferrer">@raksmala</a></span>
+  <span class="app-footer-sep" aria-hidden="true">·</span>
+  <span>© 2026 raksmala</span>
+</footer>
 
 <script>
 /* ============================================================
