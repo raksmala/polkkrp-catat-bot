@@ -289,6 +289,27 @@
     box-shadow: 0 0 0 3px var(--accent-glow);
   }
   input::placeholder { color: var(--text-2); }
+  textarea {
+    width: 100%;
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--text-0);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    outline: none;
+    resize: vertical;
+    min-height: 180px;
+    text-transform: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  textarea::placeholder { color: var(--text-2); }
   select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c6480' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -853,6 +874,14 @@
         <span class="tpl-file">undang-undang.json</span>
       </div>
     </button>
+
+    <button class="tpl-btn" data-tpl="skck">
+      <div class="tpl-icon">📄</div>
+      <div class="tpl-name">
+        SKCK
+        <span class="tpl-file">police-record.md</span>
+      </div>
+    </button>
   </nav>
 
   <!-- ── MAIN FORM ── -->
@@ -910,6 +939,20 @@ let pasalList = [];
 let pasalLookup = {};
 const MAX_PENJARA = 40;
 
+const KEPERLUAN_LIST = [
+  { nama: 'Operasi Plastik', harga: 160000 },
+  { nama: 'Pergantian KTP', harga: 375000 },
+  { nama: 'Pembuatan Kartu Keluarga', harga: 205000 },
+  { nama: 'Ahli Nikah', harga: 155000 },
+  { nama: 'Visa Luar Negeri', harga: 135000 },
+  { nama: 'Pembuatan Usaha', harga: 5000000 },
+  { nama: 'Sewa Lahan', harga: 2500000 },
+  {
+    nama: 'Melamar Pekerjaan (Instansi, Pekerja EO, Perpanjangan Kontrak Karyawan EO, Swasta)',
+    harga: 105000,
+  },
+];
+
 // ── DOM refs
 const sidebar    = document.getElementById('sidebar');
 const formArea   = document.getElementById('formArea');
@@ -956,6 +999,12 @@ const TEMPLATES = {
     desc:  'Generate daftar pasal, invoice, dan masa penjara.',
     icon:  '⚖️',
     fields: ['nama_suspect', '_pasal'],
+  },
+  skck: {
+    title: 'SKCK',
+    desc:  'Generate Surat Keterangan Catatan Kepolisian.',
+    icon:  '📄',
+    fields: ['record_type', 'identitas', 'keperluan', '_pasal'],
   },
 };
 
@@ -1010,6 +1059,36 @@ function formatRupiah(n) {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(n);
+}
+
+function formatKK(n) {
+  return new Intl.NumberFormat('id-ID', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(n) + ' $KK';
+}
+
+function fmtDate(d) {
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function getSkckDates() {
+  const today = new Date();
+  const validUntil = new Date(today);
+  validUntil.setDate(validUntil.getDate() + 7);
+  return { today, validUntil };
+}
+
+function getKeperluanByIndex(idx) {
+  const i = parseInt(idx, 10);
+  return Number.isFinite(i) && KEPERLUAN_LIST[i] ? KEPERLUAN_LIST[i] : null;
+}
+
+function isSkckCriminal(recordType) {
+  return recordType === 'MEMILIKI CATATAN KRIMINAL';
 }
 
 function filterPasal(query) {
@@ -1135,6 +1214,8 @@ function formatOutput(tpl, vals) {
         `SERIAL NUMBER   : ${vals.serial_number || '—'}\n` +
         `KETERANGAN      : BB ${vals.keterangan || '—'}`;
       break;
+    case 'skck':
+      return buildSkckOutput(vals).output;
     default:
       return '';
   }
@@ -1142,12 +1223,65 @@ function formatOutput(tpl, vals) {
   return '```\n' + body + '\n```';
 }
 
+function buildSkckOutput(vals) {
+  const { today, validUntil } = getSkckDates();
+  const tercatat = fmtDate(today);
+  const sampai = fmtDate(validUntil);
+  const dikeluarkan = fmtDate(today);
+
+  const identitas = (vals.identitas || '').trim();
+  const keperluan = getKeperluanByIndex(vals.keperluan);
+  const keperluanNama = keperluan ? keperluan.nama : '—';
+
+  const criminal = isSkckCriminal(vals.record_type);
+  const pasalObjects = criminal ? getSelectedPasalObjects(vals._pasal || []) : [];
+
+  let catatanBlock;
+  if (criminal) {
+    const lines = pasalObjects.map(p => `- PASAL ${p.kode}, ${upperStr(p.pelanggaran)}`);
+    catatanBlock =
+      `BAHWASANNYA NAMA TERSEBUT DIATAS MEMILIKI CATATAN ATAU KETERLIBATAN DALAM KEGIATAN KEJAHATAN ATAU CATATAN KRIMINAL RINGAN YG TERCANTUM SEBAGAI BERIKUT:\n\n` +
+      `Catatan : \n` +
+      (lines.length ? lines.join('\n') : '-');
+  } else {
+    catatanBlock =
+      `BAHWASANNYA NAMA TERSEBUT DIATAS TIDAK MEMILIKI CATATAN ATAU KETERLIBATAN DALAM KEGIATAN KEJAHATAN ATAU KRIMINAL APAPUN.\n\n` +
+      `Catatan : -`;
+  }
+
+  const body =
+    `SURAT KETERANGAN CATATAN KEPOLISIAN\n` +
+    `---------------------------------------------------------------------\n` +
+    `        POLICE RECORD\n\n` +
+    (identitas ? identitas + '\n' : '') +
+    `KEPERLUAN : ${keperluanNama}\n\n` +
+    `TERCATAT PER TANGGAL ${tercatat}, \n` +
+    `SAMPAI DENGAN. ${sampai}\n\n` +
+    catatanBlock + `\n\n` +
+    `BERIKUT SURAT INI DIBUAT DARI PIHAK KEPOLISIAN KOTA KITA, DIANJURKAN UNTUK MELAKUKAN PEMERIKSAAN SECARA BERKALA PER SURAT INI DIGUNAKAN KARENA BISA SAJA ADA PERUBAHAN SETELAH PEMBUATAN SKCK. TERTANDA, KEPOLISIAN KOTA KITA.\n\n` +
+    `                    DIKELUARKAN DI : KOTA KITA\n` +
+    ` (${dikeluarkan})\n` +
+    `                    MENGETAHUI.\n` +
+    `PERTIKA KUNCORO DININGRAT`;
+
+  return {
+    body,
+    output: body,
+    keperluan,
+    pasalObjects,
+  };
+}
+
 // ── Collect current form values
 function collectValues() {
   const vals = {};
   formArea.querySelectorAll('[data-field]').forEach(el => {
     const v = el.value;
-    if (el.tagName === 'SELECT' || (el.tagName === 'INPUT' && el.type === 'text')) {
+    if (el.tagName === 'TEXTAREA') {
+      vals[el.dataset.field] = v;
+    } else if (el.tagName === 'SELECT') {
+      vals[el.dataset.field] = el.dataset.field === 'keperluan' ? v : upperStr(v);
+    } else if (el.tagName === 'INPUT' && el.type === 'text') {
       vals[el.dataset.field] = upperStr(v);
     } else {
       vals[el.dataset.field] = v;
@@ -1163,7 +1297,7 @@ function collectValues() {
       };
     });
   }
-  if (activeTpl === 'pasal') {
+  if (activeTpl === 'pasal' || activeTpl === 'skck') {
     vals._pasal = syncPasalEntriesFromDOM();
   }
   return vals;
@@ -1182,6 +1316,11 @@ function updatePreview() {
   if (activeTpl === 'pasal') {
     normalizePasalFormInputs();
     updatePasalPreview(collectValues());
+    return;
+  }
+
+  if (activeTpl === 'skck') {
+    updateSkckPreview(collectValues());
     return;
   }
 
@@ -1269,11 +1408,65 @@ function updatePasalPreview(vals) {
     </div>`;
 }
 
+function updateSkckPreview(vals) {
+  const { output, keperluan, pasalObjects } = buildSkckOutput(vals);
+  const hasContent = (vals.identitas || '').trim() || keperluan;
+  const chars = output.length;
+
+  charCounter.innerHTML = `<span>${chars}</span> karakter`;
+  btnCopy.disabled = !hasContent;
+
+  const hargaHtml = keperluan
+    ? `<div class="result-summary-row">
+        <span class="result-summary-label">Harga SKCK</span>
+        <span class="result-summary-value">${escHtml(formatKK(keperluan.harga))}</span>
+      </div>`
+    : '';
+
+  const pasalNote = isSkckCriminal(vals.record_type) && pasalObjects.length
+    ? `<div class="result-summary-row">
+        <span class="result-summary-label">Pasal</span>
+        <span class="result-summary-value">${pasalObjects.length} terpilih</span>
+      </div>`
+    : '';
+
+  previewBody.innerHTML = hasContent ? `
+    <div class="pasal-preview">
+      <div class="discord-mock">
+        <div class="discord-mock-bar">
+          <span class="discord-channel">skck-kotakita</span>
+        </div>
+        <div class="discord-msg">
+          <div class="discord-avatar">🚔</div>
+          <div class="discord-msg-body">
+            <div class="discord-username">
+              Petugas KotaKita
+              <span class="discord-role-badge">POLISI</span>
+            </div>
+            <div class="discord-text">${escHtml(output)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="result-summary">
+        <div class="result-summary-row">
+          <span class="result-summary-label">Keperluan</span>
+          <span class="result-summary-value">${escHtml(keperluan ? keperluan.nama : '—')}</span>
+        </div>
+        ${hargaHtml}
+        ${pasalNote}
+      </div>
+    </div>` : `
+    <div class="preview-empty">
+      <div class="preview-empty-icon">📄</div>
+      <div>Tempel data identitas dan<br>pilih keperluan untuk preview.</div>
+    </div>`;
+}
+
 // ── Build form HTML for a template
 function buildForm(tpl) {
   if (tpl === 'barang') {
     barangEntries = [{ nama: '', jumlah: '' }];
-  } else if (tpl === 'pasal') {
+  } else if (tpl === 'pasal' || tpl === 'skck') {
     pasalEntries = [{ kode: '' }];
   }
 
@@ -1338,6 +1531,25 @@ function buildForm(tpl) {
           </div>`;
       }
       break;
+
+    /* ── skck ── */
+    case 'skck':
+      html += selectField('record_type', 'Jenis Catatan', [
+        'CATATAN BERSIH',
+        'MEMILIKI CATATAN KRIMINAL',
+      ], 'CATATAN BERSIH');
+      html += textareaField(
+        'identitas',
+        'Data Identitas (Paste)',
+        '',
+        'NAMA : \nSTEAM : \nJENIS KELAMIN : \nKEBANGSAAN : \nTANGGAL LAHIR : \nNOMOR HP : \nUMUR : \nPEKERJAAN : '
+      );
+      html += keperluanSelectField('keperluan', 'Keperluan', '');
+      if (!uuData) {
+        html += '<div class="form-error">Gagal memuat undang-undang.json. Pasal kriminal tidak tersedia.</div>';
+      }
+      html += `<div id="skckPasalSection"></div>`;
+      break;
   }
 
   html += '</div>';
@@ -1369,6 +1581,52 @@ function selectField(id, labelText, options, selected) {
       <label for="f_${id}">${labelText} <span class="required">*</span></label>
       <select id="f_${id}" data-field="${id}">${opts}</select>
     </div>`;
+}
+
+function textareaField(id, labelText, value, placeholder) {
+  return `
+    <div class="field-group">
+      <label for="f_${id}">${labelText} <span class="required">*</span></label>
+      <textarea
+        id="f_${id}"
+        data-field="${id}"
+        placeholder="${escAttr(placeholder)}"
+        autocomplete="off"
+      >${escHtml(value)}</textarea>
+    </div>`;
+}
+
+function keperluanSelectField(id, labelText, selected) {
+  const opts = ['<option value="">— Pilih Keperluan —</option>']
+    .concat(KEPERLUAN_LIST.map((k, i) =>
+      `<option value="${i}" ${String(i) === String(selected) ? 'selected' : ''}>${escHtml(k.nama)} — ${escHtml(formatKK(k.harga))}</option>`
+    ))
+    .join('');
+  return `
+    <div class="field-group">
+      <label for="f_${id}">${labelText} <span class="required">*</span></label>
+      <select id="f_${id}" data-field="${id}">${opts}</select>
+    </div>`;
+}
+
+function renderSkckPasalSection(recordType) {
+  if (!isSkckCriminal(recordType) || !uuData) return '';
+  return `
+    <div class="field-group">
+      <label>Pasal Kriminal <span class="required">*</span></label>
+      <div class="barang-list" id="pasalList">
+        ${pasalEntries.map((p, i) => pasalRow(i, p.kode)).join('')}
+      </div>
+      <button class="btn-add-barang" id="btnAddPasal" type="button">＋ Tambah Pasal</button>
+    </div>`;
+}
+
+function mountSkckPasalSection(recordType) {
+  const section = document.getElementById('skckPasalSection');
+  if (!section) return;
+  section.innerHTML = renderSkckPasalSection(recordType);
+  bindPasalAddButton();
+  initAllPasalComboboxes();
 }
 
 function barangRow(i, nama, jumlah) {
@@ -1612,10 +1870,19 @@ function initAllPasalComboboxes() {
 }
 
 function attachPasalEvents() {
-  const btnAdd = document.getElementById('btnAddPasal');
-  if (btnAdd) btnAdd.addEventListener('click', addPasal);
-  formArea.addEventListener('click', handleRemovePasal);
+  bindPasalAddButton();
+  if (!formArea.dataset.pasalClickBound) {
+    formArea.dataset.pasalClickBound = '1';
+    formArea.addEventListener('click', handleRemovePasal);
+  }
   initAllPasalComboboxes();
+}
+
+function bindPasalAddButton() {
+  const btnAdd = document.getElementById('btnAddPasal');
+  if (!btnAdd || btnAdd.dataset.pasalBound === '1') return;
+  btnAdd.dataset.pasalBound = '1';
+  btnAdd.addEventListener('click', addPasal);
 }
 
 // ── Activate a template
@@ -1650,6 +1917,13 @@ function activateTemplate(tpl) {
     attachPasalEvents();
   }
 
+  if (tpl === 'skck') {
+    mountSkckPasalSection(
+      formArea.querySelector('[data-field="record_type"]')?.value || 'CATATAN BERSIH'
+    );
+    if (uuData) attachPasalEvents();
+  }
+
   uppercaseAllTextInputs();
   updatePreview();
 }
@@ -1662,6 +1936,14 @@ function onFormInput(e) {
       updatePreview();
     });
     return;
+  }
+  if (
+    activeTpl === 'skck' &&
+    e.target.dataset?.field === 'record_type'
+  ) {
+    closeAllPasalDropdowns();
+    pasalEntries = [{ kode: '' }];
+    mountSkckPasalSection(e.target.value);
   }
   updatePreview();
 }
@@ -1800,6 +2082,12 @@ btnClear.addEventListener('click', () => {
   }
   if (activeTpl === 'pasal' && uuData) {
     attachPasalEvents();
+  }
+  if (activeTpl === 'skck') {
+    mountSkckPasalSection(
+      formArea.querySelector('[data-field="record_type"]')?.value || 'CATATAN BERSIH'
+    );
+    if (uuData) attachPasalEvents();
   }
   updatePreview();
 });
