@@ -1,0 +1,40 @@
+/* ─── RESET & TOKENS ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-0: #0d0f14;
+  --bg-1: #13161e;
+  --bg-2: #1a1e29;
+  --bg-3: #222736;
+  --bg-4: #2a3045;
+  --border: #2e3548;
+  --border-hi: #404a64;
+  --text-0: #e8ecf5;
+  --text-1: #9aa3bf;
+  --text-2: #5c6480;
+  --accent: #4f7fff;
+  --accent-glow: rgba(79,127,255,.25);
+  --accent-dim: #2d4fa3;
+  --green: #3ecf8e;
+  --green-dim: rgba(62,207,142,.15);
+  --red: #f05252;
+  --red-dim: rgba(240,82,82,.15);
+  --yellow: #f5a623;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --sidebar-w: 210px;
+  --preview-w: 560px;
+  --transition: .18s cubic-bezier(.4,0,.2,1);
+}
+
+html { font-size: 14px; }
+body {
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-tap-highlight-color: transparent;
+}

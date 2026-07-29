@@ -1,0 +1,181 @@
+/* Pasal entries & combobox */
+.pasal-entry {
+  grid-template-columns: 1fr 36px;
+  position: relative;
+  z-index: 1;
+}
+.pasal-entry.is-open { z-index: 1000; }
+.barang-list:has(.pasal-entry),
+.field-group:has(.pasal-entry),
+.form-card:has(.pasal-entry) {
+  overflow: visible;
+}
+.pasal-combobox {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+input.pasal-combobox-input[type="text"] {
+  flex: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+  text-transform: none;
+  padding-right: 10px;
+}
+.pasal-combobox-toggle {
+  width: 36px;
+  flex-shrink: 0;
+  background: var(--bg-0);
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 10px;
+  transition: background var(--transition), color var(--transition);
+}
+.pasal-combobox-toggle:hover { background: var(--bg-3); color: var(--text-0); }
+.pasal-combobox.open .pasal-combobox-input,
+.pasal-combobox.open .pasal-combobox-toggle {
+  border-color: var(--accent);
+}
+.pasal-combobox.open .pasal-combobox-toggle {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.pasal-combobox-dropdown {
+  position: fixed;
+  max-height: min(240px, 50vh);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-sm);
+  z-index: 10000;
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
+  pointer-events: auto;
+  isolation: isolate;
+}
+.pasal-combobox-dropdown.hidden { display: none; }
+.pasal-combobox-group {
+  padding: 8px 12px 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  position: sticky;
+  top: 0;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+.pasal-combobox-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-0);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background var(--transition);
+  line-height: 1.35;
+  text-transform: none;
+}
+.pasal-combobox-item:hover,
+.pasal-combobox-item.active {
+  background: var(--bg-4);
+  color: var(--accent);
+}
+.pasal-combobox-empty {
+  padding: 14px 12px;
+  font-size: 12px;
+  color: var(--text-2);
+  text-align: center;
+}
+.form-error {
+  padding: 12px 14px;
+  background: var(--red-dim);
+  border: 1px solid rgba(240,82,82,.3);
+  border-radius: var(--radius-sm);
+  color: var(--red);
+  font-size: 12px;
+}
+
+/* Pasal preview blocks */
+.pasal-preview { display: flex; flex-direction: column; gap: 12px; }
+.result-block {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.result-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.result-block-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-0);
+  padding: 10px 12px;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+  text-transform: none;
+}
+.result-summary {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.result-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12px;
+}
+.result-summary-label { color: var(--text-2); font-weight: 600; }
+.result-summary-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--green);
+  text-align: right;
+}
+.result-summary-note {
+  font-size: 11px;
+  color: var(--yellow);
+  line-height: 1.4;
+}
+.btn-copy-sm {
+  padding: 4px 10px;
+  background: var(--bg-4);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.btn-copy-sm:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+

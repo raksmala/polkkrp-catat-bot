@@ -1,0 +1,125 @@
+/* Shift logs */
+.shift-file-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.shift-file-hint {
+  font-size: 11px;
+  color: var(--text-2);
+}
+.shift-log-textarea {
+  min-height: 280px;
+  line-height: 1.45;
+}
+.shift-filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.shift-form-note {
+  font-size: 11px;
+  color: var(--text-2);
+  line-height: 1.45;
+  margin-top: -4px;
+}
+.shift-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.shift-summary-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.shift-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.shift-summary-span {
+  font-size: 10px !important;
+  line-height: 1.4;
+}
+.shift-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.shift-card {
+  background: #2b2d31;
+  border: 1px solid #1e1f22;
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: fadeUp .2s ease both;
+}
+.shift-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.shift-card-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.shift-card-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  background: var(--green-dim);
+  border: 1px solid rgba(62,207,142,.25);
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.shift-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+.shift-card-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #a0a3b1;
+}
+.shift-card-times {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid #3f4147;
+}
+.shift-card-times div {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #dcddde;
+  line-height: 1.4;
+}
+.shift-card-times span {
+  display: block;
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: #5c6480;
+  margin-bottom: 2px;
+}
+
