@@ -61,7 +61,7 @@ const TEMPLATES = {
     title: 'Senjata APD',
     desc:  'Generate laporan senjata APD.',
     icon:  '🛡️',
-    fields: ['nama', 'serial_number'],
+    fields: ['nama', 'pangkat', 'tipe_senjata', 'serial_number'],
   },
   'senjata-ilegal': {
     title: 'Senjata Ilegal',
@@ -289,8 +289,12 @@ function formatOutput(tpl, vals) {
     case 'senjata-apd':
       body =
         `NAMA            : ${vals.nama || '—'}\n` +
+        `PANGKAT         : ${vals.pangkat || '—'}\n` +
+        `TIPE SENJATA    : ${vals.tipe_senjata || '—'}\n` +
         `SERIAL NUMBER   : ${vals.serial_number || '—'}\n` +
-        `KETERANGAN      : BB WD APD`;
+        `TANGGAL         : ${fmtDate(new Date())}\n` +
+        `KETERANGAN      : WD APD\n` +
+        `WD/DP BY        : WD`;
       break;
     case 'senjata-ilegal':
       body =
@@ -866,7 +870,9 @@ function buildForm(tpl) {
     /* ── senjata-apd ── */
     case 'senjata-apd':
       html += field('text', 'nama', 'Nama', '', 'Contoh: MALA MORGENSTER');
-      html += field('text', 'serial_number', 'Serial Number', '', 'Contoh: SN-12345');
+      html += field('text', 'pangkat', 'Pangkat', '', 'Contoh: PEDA');
+      html += field('text', 'tipe_senjata', 'Tipe Senjata', '', 'Contoh: SPECIAL CARBINE');
+      html += field('text', 'serial_number', 'Serial Number', '', 'Contoh: 136593POL284003');
       break;
 
     /* ── senjata-ilegal ── */
