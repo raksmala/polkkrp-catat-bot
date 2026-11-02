@@ -62,6 +62,11 @@ export const TEMPLATES = {
     desc:  'Generate surat pencairan gaji PAMEN & PATI.',
     fields: ['nama', 'pangkat', 'divisi'],
   },
+  'serial-number': {
+    title: 'Gabung Serial Number',
+    desc:  'Gabungkan banyak serial number jadi satu baris, dipisah koma.',
+    fields: ['jumlah_item', 'serials'],
+  },
   'shift-logs': {
     title: 'Shift Logs',
     desc:  'Parse log Discord KOTAKITA SHIFT LOGS, hitung total durasi, dan export CSV.',

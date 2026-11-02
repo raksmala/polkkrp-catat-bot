@@ -143,6 +143,34 @@ export function buildForm(tpl) {
       html += field('text', 'divisi', 'Divisi', '', 'Contoh: POLUM');
       break;
 
+    case 'serial-number':
+      html += `
+        <div class="field-group">
+          <label for="f_jumlah_item">Jumlah Item</label>
+          <input
+            type="number"
+            id="f_jumlah_item"
+            data-field="jumlah_item"
+            min="0"
+            step="1"
+            placeholder="Contoh: 5"
+            autocomplete="off"
+          />
+        </div>
+        <div class="field-group">
+          <label for="f_serials">Serial Number <span class="required">*</span></label>
+          <textarea
+            id="f_serials"
+            class="serial-textarea"
+            data-field="serials"
+            placeholder="Satu serial per baris, tekan Enter untuk berikutnya&#10;136593POL284003&#10;136593POL284004"
+            autocomplete="off"
+            spellcheck="false"
+          ></textarea>
+        </div>
+        <p class="serial-form-note">Bisa juga tempel daftar yang dipisah koma. Item tanpa serial diisi "-" sampai sesuai jumlah item.</p>`;
+      break;
+
     case 'shift-logs':
       html += `
         <div class="field-group">

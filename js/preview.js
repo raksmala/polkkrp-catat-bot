@@ -10,6 +10,7 @@ import { formatOutput, buildSkckOutput } from './format.js';
 import { updateShiftLogsPreview } from './shift-logs.js';
 import { collectValues } from './forms.js';
 import { hooks } from './hooks.js';
+import { combineSerials } from './serial.js';
 
 export function updatePreview() {
   if (!state.activeTpl) return;
@@ -27,6 +28,11 @@ export function updatePreview() {
 
   if (state.activeTpl === 'shift-logs') {
     updateShiftLogsPreview();
+    return;
+  }
+
+  if (state.activeTpl === 'serial-number') {
+    updateSerialPreview(collectValues());
     return;
   }
 
@@ -165,6 +171,51 @@ function updateSkckPreview(vals) {
     <div class="preview-empty">
       <div class="preview-empty-title">Belum ada data SKCK</div>
       <div class="preview-empty-text">Tempel data identitas dan pilih keperluan untuk preview.</div>
+    </div>`;
+}
+
+function updateSerialPreview(vals) {
+  const r = combineSerials(vals.serials, vals.jumlah_item);
+  dom.charCounter.innerHTML = `<span>${r.output.length}</span> karakter`;
+  dom.btnCopy.disabled = r.total === 0;
+
+  if (!r.total) {
+    dom.previewBody.innerHTML = `
+      <div class="preview-empty">
+        <div class="preview-empty-title">Belum ada serial</div>
+        <div class="preview-empty-text">Isi jumlah item atau ketik serial number untuk preview.</div>
+      </div>`;
+    return;
+  }
+
+  const notes = [];
+  if (r.overflow) notes.push(`Serial (${r.serials.length}) melebihi jumlah item (${r.jumlah}). Semua serial tetap dimasukkan.`);
+  if (r.duplicates.length) notes.push(`Serial duplikat: ${r.duplicates.join(', ')}`);
+  const notesHtml = notes.length
+    ? `<div class="result-summary-note">${notes.map(escHtml).join('<br>')}</div>`
+    : '';
+
+  dom.previewBody.innerHTML = `
+    <div class="pasal-preview">
+      <div class="result-block">
+        <div class="result-block-header"><span>Hasil Gabungan</span></div>
+        <pre class="result-block-code">${escHtml(r.output)}</pre>
+      </div>
+      <div class="result-summary">
+        <div class="result-summary-row">
+          <span class="result-summary-label">Total Item</span>
+          <span class="result-summary-value">${r.total}</span>
+        </div>
+        <div class="result-summary-row">
+          <span class="result-summary-label">Serial Terisi</span>
+          <span class="result-summary-value">${r.serials.length}</span>
+        </div>
+        <div class="result-summary-row">
+          <span class="result-summary-label">Kosong (-)</span>
+          <span class="result-summary-value">${r.empty}</span>
+        </div>
+        ${notesHtml}
+      </div>
     </div>`;
 }
 

@@ -1,4 +1,5 @@
 import { fmtDate, upperStr } from './utils.js';
+import { combineSerials } from './serial.js';
 import {
   getSkckDates,
   getKeperluanByIndex,
@@ -79,6 +80,10 @@ export function formatOutput(tpl, vals) {
       break;
     case 'skck':
       return buildSkckOutput(vals).output;
+    case 'serial-number': {
+      const r = combineSerials(vals.serials, vals.jumlah_item);
+      return r.total ? r.output : '';
+    }
     default:
       return '';
   }
