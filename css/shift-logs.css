@@ -1,125 +1,128 @@
-/* Shift logs */
+/* ─── SHIFT LOGS FORM ────────────────────────────────── */
 .shift-file-row {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 .shift-file-hint {
-  font-size: 11px;
-  color: var(--text-2);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
 }
 .shift-log-textarea {
   min-height: 280px;
-  line-height: 1.45;
 }
 .shift-filters {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 16px;
 }
 .shift-form-note {
-  font-size: 11px;
-  color: var(--text-2);
-  line-height: 1.45;
-  margin-top: -4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: -16px;
 }
+
+/* ─── SHIFT LOGS PREVIEW ─────────────────────────────── */
 .shift-preview {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 .shift-summary-names {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: 8px;
+  padding: 8px 0 12px;
+  border-bottom: 1px solid var(--divider);
 }
+/* Filter chip (DESIGN.md Chips/Filter). */
 .shift-chip {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  background: var(--accent-dim);
-  color: var(--accent);
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-}
-.shift-summary-span {
-  font-size: 10px !important;
+  padding: 4px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
   line-height: 1.4;
 }
+.shift-summary-span {
+  font-size: 12px !important;
+  line-height: 1.4;
+}
+
 .shift-card-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 .shift-card {
-  background: #2b2d31;
-  border: 1px solid #1e1f22;
-  border-left: 4px solid var(--accent);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  animation: fadeUp .2s ease both;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
+/* Navy header strip carries the category label (identity motif). */
 .shift-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  padding: 8px 16px;
+  background: var(--navy);
 }
 .shift-card-title {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .8px;
-  text-transform: uppercase;
-  color: var(--accent);
+  font-family: var(--font-head);
+  font-size: 12px;
+  font-weight: 600;
+  color: #CBD5E1;
 }
 .shift-card-badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--green);
-  background: var(--green-dim);
-  border: 1px solid rgba(62,207,142,.25);
-  padding: 3px 8px;
-  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 .shift-card-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
+  padding: 12px 16px 0;
+  font-family: var(--font-head);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
 }
 .shift-card-id {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: #a0a3b1;
+  padding: 0 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  word-break: break-all;
 }
 .shift-card-times {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 4px;
-  padding-top: 8px;
-  border-top: 1px solid #3f4147;
+  gap: 16px;
+  margin: 12px 16px 0;
+  padding: 12px 0 16px;
+  border-top: 1px solid var(--divider);
 }
 .shift-card-times div {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: #dcddde;
-  line-height: 1.4;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
 }
 .shift-card-times span {
   display: block;
-  font-family: 'Syne', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-  color: #5c6480;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
   margin-bottom: 2px;
 }
-

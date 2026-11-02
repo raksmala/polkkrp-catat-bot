@@ -1,6 +1,6 @@
 import { MAX_PENJARA, KEPERLUAN_LIST } from './config.js';
 import { state, dom } from './state.js';
-import { upperStr, escAttr, escHtml } from './utils.js';
+import { upperStr, escAttr, escHtml, ICON_REMOVE, ICON_CHEVRON } from './utils.js';
 import { hooks } from './hooks.js';
 
 export async function loadUndangUndang() {
@@ -26,7 +26,7 @@ export async function loadUndangUndang() {
 
 export function pasalLabel(kode) {
   const p = state.pasalLookup[kode];
-  return p ? `${p.kode} — ${p.pelanggaran}` : '';
+  return p ? `${p.kode} · ${p.pelanggaran}` : '';
 }
 
 export function getSkckDates() {
@@ -153,10 +153,10 @@ export function pasalRow(i, selectedKode) {
           value="${escAttr(label)}"
           autocomplete="off"
         />
-        <button type="button" class="pasal-combobox-toggle" data-pasal-toggle="${i}" aria-label="Buka daftar pasal">▼</button>
+        <button type="button" class="pasal-combobox-toggle" data-pasal-toggle="${i}" aria-label="Buka daftar pasal">${ICON_CHEVRON}</button>
         <div class="pasal-combobox-dropdown hidden" data-pasal-dropdown="${i}"></div>
       </div>
-      <button class="btn-remove-barang" data-remove-pasal="${i}" aria-label="Hapus" type="button">✕</button>
+      <button class="btn-remove-barang" data-remove-pasal="${i}" aria-label="Hapus pasal" type="button">${ICON_REMOVE}</button>
     </div>`;
 }
 
@@ -168,7 +168,7 @@ export function renderSkckPasalSection(recordType) {
       <div class="barang-list" id="pasalList">
         ${state.pasalEntries.map((p, i) => pasalRow(i, p.kode)).join('')}
       </div>
-      <button class="btn-add-barang" id="btnAddPasal" type="button">＋ Tambah Pasal</button>
+      <button class="btn-add-barang" id="btnAddPasal" type="button">Tambah Pasal</button>
     </div>`;
 }
 
@@ -194,7 +194,7 @@ function renderPasalDropdownList(listEl, items, activeIdx) {
   for (const [kat, entries] of groups) {
     html += `<div class="pasal-combobox-group">${escHtml(kat)}</div>`;
     for (const { p, idx } of entries) {
-      html += `<button type="button" class="pasal-combobox-item${idx === activeIdx ? ' active' : ''}" data-kode="${escAttr(p.kode)}" data-idx="${idx}">${escHtml(p.kode)} — ${escHtml(p.pelanggaran)}</button>`;
+      html += `<button type="button" class="pasal-combobox-item${idx === activeIdx ? ' active' : ''}" data-kode="${escAttr(p.kode)}" data-idx="${idx}"><span class="pasal-kode">${escHtml(p.kode)}</span>${escHtml(p.pelanggaran)}</button>`;
     }
   }
   listEl.innerHTML = html;

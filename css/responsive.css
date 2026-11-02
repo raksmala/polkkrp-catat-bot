@@ -11,7 +11,7 @@
   .preview {
     position: fixed;
     right: 0;
-    top: 56px;
+    top: var(--header-h);
     bottom: 0;
     width: min(560px, 90vw);
     z-index: 100;
@@ -36,7 +36,7 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: 56px;
+    top: var(--header-h);
     bottom: 0;
     width: var(--sidebar-w);
     z-index: 100;
@@ -46,7 +46,7 @@
   .sidebar.open { transform: translateX(0); }
   .mobile-menu-btn { display: flex; }
   .main { padding: 16px; }
-  .barang-entry { grid-template-columns: 1fr 80px 36px; }
+  .barang-entry { grid-template-columns: 1fr 88px 42px; }
   .shift-filters { grid-template-columns: 1fr; }
   .shift-card-times { grid-template-columns: 1fr; }
 
@@ -59,21 +59,18 @@
     font-size: 16px;
   }
 
-  /* Touch-friendly tap targets */
-  .tpl-btn {
-    min-height: 44px;
-    padding: 12px;
-  }
-  .btn-remove-barang {
-    min-width: 40px;
-    min-height: 40px;
-  }
-  .pasal-combobox-toggle {
-    min-width: 40px;
-  }
-  .btn-add-barang {
-    min-height: 44px;
-  }
+  /* Touch-friendly tap targets (44px minimum) */
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  select { min-height: 44px; }
+  .btn-remove-barang { width: 44px; height: 44px; }
+  .pasal-combobox-toggle { width: 44px; }
+  .pasal-entry { grid-template-columns: 1fr 44px; }
+  .btn-add-barang, .btn-clear, .btn-copy-sm { min-height: 44px; }
+  .sidebar { box-shadow: var(--shadow-lg); }
+  .preview { box-shadow: var(--shadow-lg); }
+  .form-title { font-size: 24px; }
 }
 
 /* Phone */
@@ -90,24 +87,29 @@
     align-items: flex-start;
   }
   .barang-entry {
-    grid-template-columns: 1fr 70px 36px;
+    grid-template-columns: 1fr 76px 44px;
   }
   .header-tag {
     display: none;
   }
   .header {
-    padding: 0 12px;
+    padding: 0 16px;
     gap: 8px;
   }
   .main {
-    padding: 12px;
+    padding: 24px 16px;
+  }
+  .preview-header, .preview-body, .preview-footer {
+    padding-left: 16px;
+    padding-right: 16px;
   }
   .form-card {
     padding: 16px;
   }
   .form-title {
-    font-size: 18px;
+    font-size: 24px;
   }
+  .app-footer-sep { display: none; }
   .app-footer {
     flex-direction: column;
     gap: 8px;
@@ -122,23 +124,17 @@
 }
 
 /* Very small phones */
-@media (max-width: 374px) {
+/* Narrow phones: header holds Menu + wordmark + Preview only */
+@media (max-width: 479px) {
   .logo-sub {
     display: none;
   }
-  .mobile-menu-btn span,
+}
+
+@media (max-width: 374px) {
+  .mobile-menu-btn,
   .header-preview-btn {
-    font-size: 11px;
+    padding: 0 10px;
   }
 }
 
-/* Disable sticky hover effects on touch devices */
-@media (hover: none) {
-  .btn-copy:hover {
-    filter: none;
-    transform: none;
-  }
-  .btn-copy:active {
-    filter: brightness(1.1);
-  }
-}

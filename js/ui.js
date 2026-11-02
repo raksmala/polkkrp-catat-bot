@@ -42,6 +42,8 @@ export function closeMobile() {
   dom.previewEl.classList.remove('open');
   dom.overlay.classList.remove('visible');
   dom.overlay.classList.add('hidden');
+  dom.menuBtn.setAttribute('aria-expanded', 'false');
+  dom.previewBtn.setAttribute('aria-expanded', 'false');
 }
 
 export function bindGlobalEvents() {
@@ -53,7 +55,7 @@ export function bindGlobalEvents() {
       const summary = summarizeShiftLogs(state.lastShiftRows);
       downloadShiftLogsCsv(state.lastShiftRows, summary);
       dom.btnCopy.classList.add('copied');
-      dom.btnCopy.textContent = '✓ Exported!';
+      dom.btnCopy.textContent = 'Exported';
       setTimeout(() => {
         setShiftExportButton(state.lastShiftRows.length > 0);
       }, 2000);
@@ -65,10 +67,10 @@ export function bindGlobalEvents() {
     if (!output) return;
     copyToClipboard(output);
     dom.btnCopy.classList.add('copied');
-    dom.btnCopy.textContent = '✓ Disalin!';
+    dom.btnCopy.textContent = 'Disalin';
     setTimeout(() => {
       dom.btnCopy.classList.remove('copied');
-      dom.btnCopy.innerHTML = '📋 Copy';
+      dom.btnCopy.textContent = 'Copy';
     }, 2000);
   });
 
@@ -109,8 +111,10 @@ export function bindGlobalEvents() {
     const open = dom.sidebar.classList.toggle('open');
     dom.overlay.classList.toggle('visible', open);
     dom.overlay.classList.toggle('hidden', !open);
+    dom.menuBtn.setAttribute('aria-expanded', String(open));
     if (dom.previewEl.classList.contains('open')) {
       dom.previewEl.classList.remove('open');
+      dom.previewBtn.setAttribute('aria-expanded', 'false');
     }
   });
 
@@ -118,10 +122,21 @@ export function bindGlobalEvents() {
     const open = dom.previewEl.classList.toggle('open');
     dom.overlay.classList.toggle('visible', open);
     dom.overlay.classList.toggle('hidden', !open);
+    dom.previewBtn.setAttribute('aria-expanded', String(open));
     if (dom.sidebar.classList.contains('open')) {
       dom.sidebar.classList.remove('open');
+      dom.menuBtn.setAttribute('aria-expanded', 'false');
     }
   });
 
   dom.overlay.addEventListener('click', closeMobile);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const wasOpen = dom.sidebar.classList.contains('open') || dom.previewEl.classList.contains('open');
+    if (!wasOpen) return;
+    const returnTo = dom.sidebar.classList.contains('open') ? dom.menuBtn : dom.previewBtn;
+    closeMobile();
+    returnTo.focus();
+  });
 }

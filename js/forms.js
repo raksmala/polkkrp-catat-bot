@@ -1,6 +1,6 @@
 import { TEMPLATES, KEPERLUAN_LIST } from './config.js';
 import { state, dom } from './state.js';
-import { upperStr, enforceUppercase, formatKK, escAttr, escHtml } from './utils.js';
+import { upperStr, enforceUppercase, formatKK, escAttr, escHtml, ICON_REMOVE } from './utils.js';
 import {
   pasalRow,
   mountSkckPasalSection,
@@ -60,7 +60,7 @@ export function buildForm(tpl) {
           <div class="barang-list" id="barangList">
             ${state.barangEntries.map((b, i) => barangRow(i, upperStr(b.nama), b.jumlah)).join('')}
           </div>
-          <button class="btn-add-barang" id="btnAddBarang" type="button">＋ Tambah Barang</button>
+          <button class="btn-add-barang" id="btnAddBarang" type="button">Tambah Barang</button>
         </div>`;
       html += field('text', 'keterangan', 'Keterangan', '', 'Contoh: PZI, PERAMPOKAN WARUNG, dll');
       break;
@@ -98,7 +98,7 @@ export function buildForm(tpl) {
             <div class="barang-list" id="pasalList">
               ${state.pasalEntries.map((p, i) => pasalRow(i, p.kode)).join('')}
             </div>
-            <button class="btn-add-barang" id="btnAddPasal" type="button">＋ Tambah Pasal</button>
+            <button class="btn-add-barang" id="btnAddPasal" type="button">Tambah Pasal</button>
           </div>`;
       }
       break;
@@ -127,7 +127,7 @@ export function buildForm(tpl) {
           <label for="shiftLogFile">Upload File Log</label>
           <div class="shift-file-row">
             <input type="file" id="shiftLogFile" accept=".txt,.log,.md,text/plain" />
-            <span class="shift-file-hint">.txt / .log — atau tempel di bawah</span>
+            <span class="shift-file-hint">.txt / .log, atau tempel di bawah</span>
           </div>
         </div>`;
       html += `
@@ -213,9 +213,9 @@ function textareaField(id, labelText, value, placeholder) {
 }
 
 function keperluanSelectField(id, labelText, selected) {
-  const opts = ['<option value="">— Pilih Keperluan —</option>']
+  const opts = ['<option value="">Pilih keperluan</option>']
     .concat(KEPERLUAN_LIST.map((k, i) =>
-      `<option value="${i}" ${String(i) === String(selected) ? 'selected' : ''}>${escHtml(k.nama)} — ${escHtml(formatKK(k.harga))}</option>`
+      `<option value="${i}" ${String(i) === String(selected) ? 'selected' : ''}>${escHtml(k.nama)} (${escHtml(formatKK(k.harga))})</option>`
     ))
     .join('');
   return `
@@ -242,7 +242,7 @@ export function barangRow(i, nama, jumlah) {
         data-barang-jumlah="${i}"
         value="${escAttr(jumlah)}"
       />
-      <button class="btn-remove-barang" data-remove="${i}" aria-label="Hapus" type="button">✕</button>
+      <button class="btn-remove-barang" data-remove="${i}" aria-label="Hapus barang" type="button">${ICON_REMOVE}</button>
     </div>`;
 }
 
@@ -254,7 +254,7 @@ export function activateTemplate(tpl) {
     btn.classList.toggle('active', btn.dataset.tpl === tpl);
   });
 
-  dom.formTitle.textContent = `${def.icon} ${def.title}`;
+  dom.formTitle.textContent = def.title;
   dom.formDesc.textContent  = def.desc;
   dom.btnClear.style.display = 'flex';
 

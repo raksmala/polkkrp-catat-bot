@@ -50,3 +50,9 @@ export function escAttr(str) {
 export function escHtml(str) {
   return escAttr(str);
 }
+
+/* Inline SVG glyphs for icon-only controls; aria-hidden because the button carries the label. */
+export const ICON_REMOVE =
+  '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>';
+export const ICON_CHEVRON =
+  '<svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>';

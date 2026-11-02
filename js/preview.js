@@ -43,7 +43,7 @@ export function updatePreview() {
         <span class="discord-channel">laporan-bb</span>
       </div>
       <div class="discord-msg">
-        <div class="discord-avatar">🚔</div>
+        <div class="discord-avatar" aria-hidden="true">K</div>
         <div class="discord-msg-body">
           <div class="discord-username">
             Petugas KotaKita
@@ -68,10 +68,10 @@ function updatePasalPreview(vals) {
 
   let penjaraText = calc.penjaraBulan > 0
     ? `${calc.penjaraBulan} bulan${calc.capped ? ' (maks)' : ''}`
-    : '—';
+    : '-';
 
   let notes = [];
-  if (calc.capped) notes.push(`Akumulasi ${calc.rawBulan} bulan → dibatasi ${MAX_PENJARA} bulan`);
+  if (calc.capped) notes.push(`Akumulasi ${calc.rawBulan} bulan, dibatasi ${MAX_PENJARA} bulan`);
   if (calc.only2xNoBase) notes.push('Multiplier 2x Invoice butuh pasal dengan denda numerik');
   if (calc.has2xInvoice && !calc.only2xNoBase) notes.push('Denda ×2 (Pasal 7.9)');
   if (calc.hasDpo) notes.push('Masa tahanan ×2 (DPO)');
@@ -85,14 +85,14 @@ function updatePasalPreview(vals) {
       <div class="result-block">
         <div class="result-block-header">
           <span>Suspect | Pasal</span>
-          <button class="btn-copy-sm" type="button" data-copy-target="format1">📋 Copy</button>
+          <button class="btn-copy-sm" type="button" data-copy-target="format1" aria-label="Copy Suspect | Pasal">Copy</button>
         </div>
         <pre class="result-block-code">${escHtml(format1)}</pre>
       </div>
       <div class="result-block">
         <div class="result-block-header">
           <span>Pasal Saja</span>
-          <button class="btn-copy-sm" type="button" data-copy-target="format2">📋 Copy</button>
+          <button class="btn-copy-sm" type="button" data-copy-target="format2" aria-label="Copy Pasal Saja">Copy</button>
         </div>
         <pre class="result-block-code">${escHtml(format2)}</pre>
       </div>
@@ -109,8 +109,8 @@ function updatePasalPreview(vals) {
       </div>
     </div>` : `
     <div class="preview-empty">
-      <div class="preview-empty-icon">⚖️</div>
-      <div>Isi nama suspect dan<br>pilih pasal untuk preview.</div>
+      <div class="preview-empty-title">Belum ada pasal</div>
+      <div class="preview-empty-text">Isi nama suspect dan pilih pasal untuk preview.</div>
     </div>`;
 }
 
@@ -143,7 +143,7 @@ function updateSkckPreview(vals) {
           <span class="discord-channel">skck-kotakita</span>
         </div>
         <div class="discord-msg">
-          <div class="discord-avatar">🚔</div>
+          <div class="discord-avatar" aria-hidden="true">K</div>
           <div class="discord-msg-body">
             <div class="discord-username">
               Petugas KotaKita
@@ -156,15 +156,15 @@ function updateSkckPreview(vals) {
       <div class="result-summary">
         <div class="result-summary-row">
           <span class="result-summary-label">Keperluan</span>
-          <span class="result-summary-value">${escHtml(keperluan ? keperluan.nama : '—')}</span>
+          <span class="result-summary-value">${escHtml(keperluan ? keperluan.nama : '-')}</span>
         </div>
         ${hargaHtml}
         ${pasalNote}
       </div>
     </div>` : `
     <div class="preview-empty">
-      <div class="preview-empty-icon">📄</div>
-      <div>Tempel data identitas dan<br>pilih keperluan untuk preview.</div>
+      <div class="preview-empty-title">Belum ada data SKCK</div>
+      <div class="preview-empty-text">Tempel data identitas dan pilih keperluan untuk preview.</div>
     </div>`;
 }
 

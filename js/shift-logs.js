@@ -124,8 +124,8 @@ export function summarizeShiftLogs(shifts) {
     earliest,
     latest,
     spanLabel: earliest && latest
-      ? `${formatShiftDateTime(earliest)} → ${formatShiftDateTime(latest)}`
-      : '—',
+      ? `${formatShiftDateTime(earliest)} s/d ${formatShiftDateTime(latest)}`
+      : '-',
   };
 }
 
@@ -181,13 +181,13 @@ export function downloadShiftLogsCsv(shifts, summary) {
 
 export function resetShiftCopyButton() {
   dom.btnCopy.classList.remove('copied');
-  dom.btnCopy.innerHTML = '📋 Copy';
+  dom.btnCopy.textContent = 'Copy';
   dom.btnCopy.disabled = true;
 }
 
 export function setShiftExportButton(enabled) {
   dom.btnCopy.classList.remove('copied');
-  dom.btnCopy.innerHTML = '⬇ Export CSV';
+  dom.btnCopy.textContent = 'Export CSV';
   dom.btnCopy.disabled = !enabled;
 }
 
@@ -205,8 +205,8 @@ export function updateShiftLogsPreview() {
     setShiftExportButton(false);
     dom.previewBody.innerHTML = `
       <div class="preview-empty">
-        <div class="preview-empty-icon">⏱️</div>
-        <div>Tempel atau upload log Discord<br>SHIFT LOGS untuk dihitung.</div>
+        <div class="preview-empty-title">Belum ada log</div>
+        <div class="preview-empty-text">Tempel atau upload log Discord SHIFT LOGS untuk dihitung.</div>
       </div>`;
     return;
   }
@@ -217,8 +217,8 @@ export function updateShiftLogsPreview() {
     setShiftExportButton(false);
     dom.previewBody.innerHTML = `
       <div class="preview-empty">
-        <div class="preview-empty-icon">⚠️</div>
-        <div>Tidak ada blok SHIFT LOGS<br>yang bisa diparse.</div>
+        <div class="preview-empty-title">Log tidak terbaca</div>
+        <div class="preview-empty-text">Tidak ada blok SHIFT LOGS yang bisa diparse. Pastikan yang ditempel adalah pesan dari bot KOTAKITA SHIFT LOGS.</div>
       </div>`;
     return;
   }
@@ -230,7 +230,7 @@ export function updateShiftLogsPreview() {
 
   const namesHtml = summary.names.length
     ? summary.names.map(n => `<span class="shift-chip">${escHtml(n)}</span>`).join('')
-    : '<span class="shift-chip">—</span>';
+    : '<span class="shift-chip">-</span>';
 
   const skipNote = skipped > 0
     ? `<div class="result-summary-note">${skipped} shift disembunyikan oleh filter</div>`
@@ -244,14 +244,15 @@ export function updateShiftLogsPreview() {
             <div class="shift-card-badge">${escHtml(s.durationLabel)}</div>
           </div>
           <div class="shift-card-name">${escHtml(s.name)}</div>
-          <div class="shift-card-id">${escHtml(s.identifier || '—')}</div>
+          <div class="shift-card-id">${escHtml(s.identifier || '-')}</div>
           <div class="shift-card-times">
             <div><span>Start</span>${escHtml(s.startStr)}</div>
             <div><span>End</span>${escHtml(s.endStr)}</div>
           </div>
         </div>`).join('')
-    : `<div class="preview-empty" style="height:auto;padding:24px 0">
-        <div>Semua shift tersaring filter saat ini.</div>
+    : `<div class="preview-empty" style="height:auto">
+        <div class="preview-empty-title">Semua shift tersaring</div>
+        <div class="preview-empty-text">Longgarkan filter durasi atau tanggal untuk melihat shift.</div>
       </div>`;
 
   dom.previewBody.innerHTML = `
