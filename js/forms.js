@@ -1,4 +1,4 @@
-import { TEMPLATES, KEPERLUAN_LIST } from './config.js';
+import { TEMPLATES, KEPERLUAN_LIST, BULAN_LIST, JAM_DUTY_MENGETAHUI } from './config.js';
 import { state, dom } from './state.js';
 import { upperStr, enforceUppercase, formatKK, escAttr, escHtml, ICON_REMOVE } from './utils.js';
 import {
@@ -121,6 +121,28 @@ export function buildForm(tpl) {
       html += `<div id="skckPasalSection"></div>`;
       break;
 
+    case 'jam-duty': {
+      const now = new Date();
+      const prevMonth = BULAN_LIST[(now.getMonth() + 11) % 12];
+      html += field('text', 'nama', 'Nama', '', 'Contoh: TAKO RAYEL');
+      html += field('text', 'code_name', 'Code Name', '', 'Contoh: P1-011');
+      html += field('text', 'divisi', 'Divisi', '', 'Contoh: POLUM');
+      html += selectField('bulan', 'Bulan', BULAN_LIST, prevMonth);
+      html += `<div class="field-row-2">`;
+      html += field('number', 'jam', 'Jumlah Jam', '', '0');
+      html += field('number', 'menit', 'Jumlah Menit', '', '0');
+      html += `</div>`;
+      html += field('date', 'tanggal', 'Tanggal Dikeluarkan', toIsoDate(now), '');
+      html += field('text', 'mengetahui', 'Mengetahui', JAM_DUTY_MENGETAHUI, 'Nama penandatangan');
+      break;
+    }
+
+    case 'pencairan-gaji':
+      html += field('text', 'nama', 'Nama', '', 'Contoh: MALA MORGENSTER');
+      html += field('text', 'pangkat', 'Pangkat', '', 'Contoh: KOMPOL');
+      html += field('text', 'divisi', 'Divisi', '', 'Contoh: POLUM');
+      break;
+
     case 'shift-logs':
       html += `
         <div class="field-group">
@@ -169,7 +191,33 @@ export function buildForm(tpl) {
   }
 
   html += '</div>';
+  if (tpl === 'skck') html += skckPriceList();
   return html;
+}
+
+function toIsoDate(d) {
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
+
+function skckPriceList() {
+  const rows = KEPERLUAN_LIST.map((k, i) => `
+    <div class="result-summary-row price-row" data-price-row="${i}">
+      <span class="result-summary-label">${escHtml(k.nama)}</span>
+      <span class="result-summary-value">${escHtml(formatKK(k.harga))}</span>
+    </div>`).join('');
+  return `
+    <section class="price-list" aria-labelledby="skckPriceTitle">
+      <h2 class="price-list-title" id="skckPriceTitle">Daftar Harga SKCK</h2>
+      <div class="result-summary">${rows}</div>
+    </section>`;
+}
+
+function highlightSkckPrice(selected) {
+  dom.formArea.querySelectorAll('[data-price-row]').forEach(row => {
+    row.classList.toggle('is-selected', row.dataset.priceRow === String(selected));
+  });
 }
 
 function field(type, id, labelText, value, placeholder) {
@@ -326,6 +374,12 @@ export function onFormInput(e) {
     closeAllPasalDropdowns();
     state.pasalEntries = [{ kode: '' }];
     mountSkckPasalSection(e.target.value);
+  }
+  if (
+    state.activeTpl === 'skck' &&
+    e.target.dataset?.field === 'keperluan'
+  ) {
+    highlightSkckPrice(e.target.value);
   }
   hooks.updatePreview();
 }

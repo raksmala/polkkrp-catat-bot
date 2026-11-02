@@ -43,6 +43,40 @@ export function formatOutput(tpl, vals) {
         `SERIAL NUMBER   : ${vals.serial_number || '—'}\n` +
         `KETERANGAN      : BB ${vals.keterangan || '—'}`;
       break;
+    case 'jam-duty': {
+      const jam   = parseInt(vals.jam, 10) || 0;
+      const menit = parseInt(vals.menit, 10) || 0;
+      const tanggal = vals.tanggal
+        ? fmtDate(new Date(vals.tanggal + 'T00:00:00'))
+        : fmtDate(new Date());
+      body =
+        `KEPOLISIAN NEGARA KOTA KITA\n` +
+        `               KEPOLISIAN KOTA\n` +
+        `-------------------------------------------------\n` +
+        `Sifat       :  DATA KEANGGOTAAN\n` +
+        `Perihal     :  JUMLAH JAM BERTUGAS BULAN ${vals.bulan || '—'}\n\n` +
+        `BERIKUT HASIL DATA JUMLAH JAM BERTUGAS\n` +
+        `ANGGOTA KEPOLISIAN DENGAN IDENTITAS\n\n` +
+        `NAMA          : ${vals.nama || '—'}\n` +
+        `CODE NAME     : ${vals.code_name || '—'}\n` +
+        `DIVISI        : ${vals.divisi || '—'}\n` +
+        `JUMLAH        : ${jam} jam ${menit} menit Bertugas\n\n` +
+        `DATA DI ATAS MERUPAKAN HASIL PENJUMLAHAN SECARA SAH DARI JAM BERTUGAS ANGGOTA TERSEBUT. DAN SURAT INI DAPAT DI GUNAKAN SEBAGAIMANA SEMESTINYA\n\n\n` +
+        `      DIKELUARKAN DI : KANTOR POLISI PUSAT KOTA KITA\n` +
+        ` (${tanggal})\n` +
+        `                    MENGETAHUI.\n` +
+        `${vals.mengetahui || '—'}`;
+      break;
+    }
+    case 'pencairan-gaji':
+      body =
+        `========== SURAT PENCAIRAN GAJI PAMEN & PATI ==========\n\n` +
+        `Dengan hormat, disampaikan kepada Bapak/Ibu bahwa terdapat hak gaji yang perlu dibayarkan kepada perwira dengan data sebagai berikut:\n\n` +
+        `    Nama          : ${vals.nama || ''}\n` +
+        `    Pangkat       : ${vals.pangkat || ''}\n` +
+        `    Divisi        : ${vals.divisi || ''}\n` +
+        `Dengan ini menetapkan bahwa perwira yang bersangkutan telah dinyatakan memenuhi syarat, sehingga dapat dibayarkan tunjangannya. Dan dapat dicairkan melalui PERTIKA GABRIEL RAKHA SOEDJAJA dan SEKJEN DHYRA MESLER LANSKY`;
+      break;
     case 'skck':
       return buildSkckOutput(vals).output;
     default:

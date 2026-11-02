@@ -187,3 +187,21 @@ input.pasal-combobox-input[type="text"] {
 }
 .btn-copy-sm:hover { background: #1E293B; border-color: #64748B; }
 .btn-copy-sm:focus-visible { outline-color: #FFFFFF; }
+
+/* ─── SKCK PRICE LIST ────────────────────────────────── */
+.price-list {
+  margin-top: 24px;
+  max-width: 720px;
+}
+.price-list-title {
+  font-family: var(--font-head);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+.price-row.is-selected .result-summary-label,
+.price-row.is-selected .result-summary-value {
+  color: var(--text);
+  font-weight: 600;
+}

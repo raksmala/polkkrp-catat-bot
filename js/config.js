@@ -14,6 +14,13 @@ export const KEPERLUAN_LIST = [
   },
 ];
 
+export const BULAN_LIST = [
+  'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+  'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER',
+];
+
+export const JAM_DUTY_MENGETAHUI = 'ASERKA MALA MORGENSTER';
+
 export const TEMPLATES = {
   barang: {
     title: 'Barang Bukti',
@@ -44,6 +51,16 @@ export const TEMPLATES = {
     title: 'SKCK',
     desc:  'Generate Surat Keterangan Catatan Kepolisian.',
     fields: ['record_type', 'identitas', 'keperluan', '_pasal'],
+  },
+  'jam-duty': {
+    title: 'Surat Jam Duty',
+    desc:  'Generate surat data jumlah jam bertugas anggota per bulan.',
+    fields: ['nama', 'code_name', 'divisi', 'bulan', 'jam', 'menit', 'tanggal', 'mengetahui'],
+  },
+  'pencairan-gaji': {
+    title: 'Pencairan Gaji',
+    desc:  'Generate surat pencairan gaji PAMEN & PATI.',
+    fields: ['nama', 'pangkat', 'divisi'],
   },
   'shift-logs': {
     title: 'Shift Logs',
